@@ -2,6 +2,7 @@ import requests
 from PIL import Image
 from transformers import AutoProcessor, Blip2ForConditionalGeneration
 import torch
+print(torch.__version__)
 
 url = 'https://media.newyorker.com/cartoons/63dc6847be24a6a76d90eb99/master/w_1160,c_limit/230213_a26611_838.jpg'
 image = Image.open(requests.get(url, stream=True).raw).convert('RGB')
