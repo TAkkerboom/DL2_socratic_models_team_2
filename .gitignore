@@ -1,2 +1,5 @@
 *.npz
 *.xml
+
+RAVEN_0_train.npz
+RAVEN_1_train.npz
