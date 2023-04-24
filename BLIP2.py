@@ -4,13 +4,13 @@ from transformers import AutoProcessor, Blip2ForConditionalGeneration
 import torch
 
 url = 'https://media.newyorker.com/cartoons/63dc6847be24a6a76d90eb99/master/w_1160,c_limit/230213_a26611_838.jpg'
-image = Image.open(requests.get(url, stream=True).raw).convert('RGB') 
-processor = AutoProcessor.from_pretrained("Salesforce/blip2-opt-2.7b")
-model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b", device_map="auto", torch_dtype=torch.float16)
-
+image = Image.open(requests.get(url, stream=True).raw).convert('RGB')
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
+processor = AutoProcessor.from_pretrained("Salesforce/blip2-opt-2.7b")
+model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b", device_map="auto", torch_dtype=torch.float16)
 model.to(device)
+
 
 inputs = processor(image, return_tensors="pt").to("cpu", torch.float16)
 
