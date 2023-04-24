@@ -79,7 +79,6 @@ class Raven:
     def forward(self):
         i = 0
         for npz, xml in zip(self.npz_data, self.xml_data):
-            print(i)
             data_point = Preprocess('{}\{}'.format(self.path, npz), '{}\{}'.format(self.path, xml))
             data_point.process()
             self.data.append(data_point)
@@ -113,7 +112,7 @@ def inference(dataset, model):
         count += int(pred == target)
         print(count)
         predictions.append(pred)
-    return count, pred
+    return count, predictions
 
 
 def main():
