@@ -9,7 +9,7 @@ image = Image.open(requests.get(url, stream=True).raw).convert('RGB')
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
 processor = AutoProcessor.from_pretrained("Salesforce/blip2-opt-2.7b")
-model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b", torch_dtype=torch.float16)
+model = Blip2ForConditionalGeneration.from_pretrained("Salesforce/blip2-opt-2.7b", device_map="auto", torch_dtype=torch.float16)
 model.to(device)
 
 
