@@ -103,8 +103,8 @@ class VLM:
             choice_text = ""
             for i in range(len(choices)):
                 choice_text += f"({i+1}) {choices[i]} "
-
-        return self.run_model(f"{prompt}. The caption by the VLM is equal to: {caption}. What object is the closest to it according to the following choices: {choice_text}?")
+        print(caption)
+        return self.run_model(f"{prompt}. The object according to the VLM is equal to: {caption}. What is the shape of the object? You can only choose the following choices: {choice_text}?")
 
     def forward(self, image):
         print("Final VLM prediction")
@@ -123,10 +123,12 @@ def inference(dataset, model):
         image, groundtruth = image
         for j in range(amount_of_crops):
             out = model.forward(Image.fromarray(image[j]).convert("RGB"))[0]
-            pred = types.index(out)
-            count += int(pred == groundtruth[j][0])
-            print(count)
-            predictions.append(pred)
+            print(out)
+            if out in types:
+                pred = types.index(out)
+                count += int(pred == groundtruth[j][0])
+                print(count)
+                predictions.append(pred)
     return count, predictions
 
 
