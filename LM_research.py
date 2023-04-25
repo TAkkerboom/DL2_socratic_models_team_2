@@ -4,6 +4,7 @@ from os import listdir
 import os
 from sklearn.metrics import classification_report
 import xml.etree.ElementTree as ET
+import datetime
 
 
 class Preprocess:
@@ -122,23 +123,34 @@ class LM:
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         
-    def forward(self, input_str):
-        inputs = self.tokenizer(input_str, return_tensors="pt")
-        outputs = self.model.generate(**inputs, max_length=50)
+    def forward(self, batch):
+        inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
+        outputs = self.model.generate(**inputs, max_length=80)
         return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
     
+def create_batches(data, batch_size):
+    return [data[x:x+batch_size] for x in range(0, len(data), batch_size)]
 
-def inference(dataset, model):
-    count = 0
+def inference(dataset, model, batch_size):
     predictions = []
-    for i, data in enumerate(zip(dataset.prompts, dataset.targets)):
-        prompt, target = data
-        out = model.forward(prompt)[0]
-        pred = dataset.descriptions[i][8:].index(out)
-        count += int(pred == target)
-        predictions.append(pred)
-    return count, predictions
+    j = 0
+    prompts = create_batches(dataset.prompts, batch_size)
+    descriptions = create_batches(dataset.descriptions, batch_size)
+    for description_batch, prompt_batch in zip(descriptions, prompts):
+        out = model.forward(prompt_batch)
+        for output, description in zip(out, description_batch):
+            pred = description[8:].index(output)
+            predictions.append(pred)
+        j += 1
+        if j % 1 == 0:
+            print('currently at ', j * 10)
+            
+    return predictions
 
+def save_results(pred, dataset):
+    now = datetime.datetime.now()
+    curr_time = now.strftime('%m%d%H%M')
+    np.savez('center_single_res_' + curr_time, predictions=np.array(pred), targets=dataset.targets)
 
 def main():
     dataset = Raven()  
@@ -147,9 +159,10 @@ def main():
     print('loading model...')
     model = LM("google/flan-t5-large")
     print('running ... (this may take some time)')
-    count, pred = inference(dataset, model)
+    pred = inference(dataset, model, 10)
     print(classification_report(dataset.targets, pred))
+    save_results(pred, dataset)
 
-
+    
 if __name__ == '__main__':
     main()
