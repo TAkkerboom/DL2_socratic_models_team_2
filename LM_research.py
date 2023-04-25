@@ -1,6 +1,7 @@
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 import numpy as np
 from os import listdir
+import os
 from sklearn.metrics import classification_report
 import xml.etree.ElementTree as ET
 
@@ -43,14 +44,28 @@ class Preprocess:
         self.get_attributes()
 
 
+class Dataloader:
+
+    def __init__(self, path):
+        self.path = path
+        self.attributes = []
+        self.targets = []
+
+    def load(self):
+        prep = np.load(self.path)
+        self.attributes = prep['attributes']
+        self.targets = prep['targets']
+
+
+
 class Raven:
 
     def __init__(self, dir='center_single'):
-        self.path = 'RAVEN-10000\{}'.format(dir)
+        self.path = 'RAVEN-10000/{}'.format(dir)
         self.filenames = listdir(self.path)
         self.npz_data = [file for file in self.filenames if file.endswith('.npz')]
         self.xml_data = [file for file in self.filenames if file.endswith('.xml')]
-        self.data = []
+        self.attributes = []
         self.prompts = []
         self.targets = []
         self.descriptions = []
@@ -77,24 +92,35 @@ class Raven:
         return prompt
     
     def forward(self):
-        i = 0
-        for npz, xml in zip(self.npz_data, self.xml_data):
-            data_point = Preprocess('{}\{}'.format(self.path, npz), '{}\{}'.format(self.path, xml))
-            data_point.process()
-            self.data.append(data_point)
-            descriptions = self.get_descriptions(data_point.attributes)
-            self.targets.append(int(data_point.target))
-            self.prompts.append(self.generate_prompt(descriptions))
-            self.descriptions.append(descriptions)
-            i += 1
+        if os.path.isfile('center_single_prep.npz'):
+            loader = Dataloader('center_single_prep.npz')
+            loader.load()
+            self.attributes = loader.attributes
+            self.targets = loader.targets
+            for data_point in self.attributes:
+                descriptions = self.get_descriptions(data_point)
+                self.prompts.append(self.generate_prompt(descriptions))
+                self.descriptions.append(descriptions)
+        else:
+            for npz, xml in zip(self.npz_data, self.xml_data):
+                data_point = Preprocess('{}/{}'.format(self.path, npz), '{}/{}'.format(self.path, xml))
+                data_point.process()
+                self.attributes.append(data_point.attributes)
+                descriptions = self.get_descriptions(data_point.attributes)
+                self.targets.append(int(data_point.target))
+                self.prompts.append(self.generate_prompt(descriptions))
+                self.descriptions.append(descriptions)
+                
+            # Save the data on disk
+            np.savez('center_single_prep', attributes=np.array(self.attributes), targets=np.array(self.targets))
         pass
 
 
-class T5:
+class LM:
     
-    def __init__(self):
-        self.model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-large")
-        self.tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-large")
+    def __init__(self, model):
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(model)
+        self.tokenizer = AutoTokenizer.from_pretrained(model)
         
     def forward(self, input_str):
         inputs = self.tokenizer(input_str, return_tensors="pt")
@@ -105,20 +131,22 @@ class T5:
 def inference(dataset, model):
     count = 0
     predictions = []
-    for i, data in enumerate(zip(dataset.prompts[:100], dataset.targets[:100])):
+    for i, data in enumerate(zip(dataset.prompts, dataset.targets)):
         prompt, target = data
         out = model.forward(prompt)[0]
-        pred = dataset.descriptions[i].index(out) - 8
+        pred = dataset.descriptions[i][8:].index(out)
         count += int(pred == target)
-        print(count)
         predictions.append(pred)
     return count, predictions
 
 
 def main():
-    dataset = Raven()       
+    dataset = Raven()  
+    print('loading data...')     
     dataset.forward()
-    model = T5()
+    print('loading model...')
+    model = LM("google/flan-t5-large")
+    print('running ... (this may take some time)')
     count, pred = inference(dataset, model)
     print(classification_report(dataset.targets, pred))
 
