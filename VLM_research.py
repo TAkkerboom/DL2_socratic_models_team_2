@@ -5,7 +5,7 @@ import numpy as np
 from os import listdir
 from sklearn.metrics import classification_report
 import xml.etree.ElementTree as ET
-from plot_raven import plot_raven
+from plot_raven_mod import plot_raven
 import torch
 
 class Dataloader:
@@ -67,14 +67,16 @@ class Raven:
 
 
 class VLM:   
-    def __init__(self):
+    def __init__(self, device):
         # print("Loading VLM")
+        self.device = device
         self.processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
         self.model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
    
     def forward_caption(self, image, text):
         # print("Create caption")
-        encoding = self.processor(image, text, return_tensors="pt")
+        encoding = self.processor(image, text, return_tensors="pt").to(device=self.device)
+        self.model.to(self.device)
         outputs = self.model(**encoding)
         logits = outputs.logits
         idxs = [logit.argmax(-1).item() for logit in logits]
@@ -112,10 +114,11 @@ def main():
     dataset = Raven()       
     dataset.forward()
     print("Loading Model")
-    model = VLM()
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model = VLM(device)
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
     groundtruths, pred = inference(dataset, model)
-    print(classification_report(groundtruths, pred, labels=types))
+    # print(classification_report(groundtruths, pred, labels=types))
 
 
 if __name__ == '__main__':
