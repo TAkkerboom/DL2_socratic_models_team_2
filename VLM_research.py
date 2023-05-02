@@ -55,7 +55,7 @@ class Raven:
     
     def forward(self):
         i = 0
-        endimage = 100
+        endimage = len(self.npz_data)
         for npz, xml in zip(self.npz_data[:endimage], self.xml_data[:endimage]):
             data_point = Dataloader('{}/{}'.format(self.path, npz), '{}/{}'.format(self.path, xml))
             data_point.process()
