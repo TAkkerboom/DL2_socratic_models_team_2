@@ -5,6 +5,11 @@ import os
 from sklearn.metrics import classification_report
 import xml.etree.ElementTree as ET
 import datetime
+import torch
+import torch.nn.functional as F
+import torch.cuda
+import logging
+
 
 
 class Preprocess:
@@ -56,7 +61,6 @@ class Dataloader:
         prep = np.load(self.path)
         self.attributes = prep['attributes']
         self.targets = prep['targets']
-
 
 
 class Raven:
@@ -115,31 +119,44 @@ class Raven:
             # Save the data on disk
             np.savez('center_single_prep', attributes=np.array(self.attributes), targets=np.array(self.targets))
         pass
+        
+    def to_gpu(self, device):
+        self.attributes = torch.Tensor(self.attributes)
+        self.targets = torch.Tensor(self.targets)
+        self.attributes.to(device)
+        self.targets.to(device)
 
 
 class LM:
     
-    def __init__(self, model):
+    def __init__(self, model, device):
+        logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
         self.model = AutoModelForSeq2SeqLM.from_pretrained(model)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
+        self.device = device
         
     def forward(self, batch):
-        inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
-        outputs = self.model.generate(**inputs, max_length=80)
+        # inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
+        inputs = {key: value.to(self.device) for key, value in self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True).items()}
+        outputs = self.model.generate(**inputs, max_length=80).to(self.device)
         return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
+    
     
 def create_batches(data, batch_size):
     return [data[x:x+batch_size] for x in range(0, len(data), batch_size)]
 
-def inference(dataset, model, batch_size):
+def inference(dataset, model, batch_size, N, device):
     predictions = []
     j = 0
     prompts = create_batches(dataset.prompts, batch_size)
     descriptions = create_batches(dataset.descriptions, batch_size)
-    for description_batch, prompt_batch in zip(descriptions, prompts):
+    for description_batch, prompt_batch in zip(descriptions[:N], prompts[:N]):
         out = model.forward(prompt_batch)
         for output, description in zip(out, description_batch):
-            pred = description[8:].index(output)
+            if output in description[8:]:
+                pred = description[8:].index(output)
+            else:
+                pred = 8
             predictions.append(pred)
         j += 1
         if j % 1 == 0:
@@ -151,18 +168,34 @@ def save_results(pred, dataset):
     now = datetime.datetime.now()
     curr_time = now.strftime('%m%d%H%M')
     np.savez('center_single_res_' + curr_time, predictions=np.array(pred), targets=dataset.targets)
+    print('saved as center_single_res_' + curr_time)
 
 def main():
     dataset = Raven()  
     print('loading data...')     
     dataset.forward()
-    print('loading model...')
-    model = LM("google/flan-t5-large")
+    model_version = "google/flan-t5-large"
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('loading model {}...'.format(model_version))
+    model = LM(model_version, device)
+    # data and model to device
+    model.model.to(device)
+    dataset.to_gpu(device)
     print('running ... (this may take some time)')
-    pred = inference(dataset, model, 10)
-    print(classification_report(dataset.targets, pred))
+    batch = 10
+    samples = 1000
+    print('< HYPERPARAMETERS >')
+    print('dataset: ', dataset.path)
+    print('batch size: ', batch)
+    print('test samples: ', samples)
+    print('device: ', device)
+    print('<----------------->')
+    pred = inference(dataset, model, batch, samples, device)
     save_results(pred, dataset)
+    print(classification_report(dataset.targets, pred))
+    
 
     
 if __name__ == '__main__':
     main()
+    
