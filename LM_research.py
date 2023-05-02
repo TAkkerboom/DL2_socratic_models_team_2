@@ -145,11 +145,12 @@ class LM:
 def create_batches(data, batch_size):
     return [data[x:x+batch_size] for x in range(0, len(data), batch_size)]
 
-def inference(dataset, model, batch_size, N, device):
+def inference(dataset, model, batch_size, samples):
     predictions = []
     j = 0
     prompts = create_batches(dataset.prompts, batch_size)
     descriptions = create_batches(dataset.descriptions, batch_size)
+    N  = int(samples / batch_size)
     for description_batch, prompt_batch in zip(descriptions[:N], prompts[:N]):
         out = model.forward(prompt_batch)
         for output, description in zip(out, description_batch):
@@ -164,10 +165,10 @@ def inference(dataset, model, batch_size, N, device):
             
     return predictions
 
-def save_results(pred, dataset):
+def save_results(pred, dataset, samples):
     now = datetime.datetime.now()
     curr_time = now.strftime('%m%d%H%M')
-    np.savez('center_single_res_' + curr_time, predictions=np.array(pred), targets=dataset.targets)
+    np.savez('center_single_res_' + curr_time, predictions=np.array(pred), targets=dataset.targets[:int(samples)])
     print('saved as center_single_res_' + curr_time)
 
 def main():
@@ -190,9 +191,9 @@ def main():
     print('test samples: ', samples)
     print('device: ', device)
     print('<----------------->')
-    pred = inference(dataset, model, batch, samples, device)
-    save_results(pred, dataset)
-    print(classification_report(dataset.targets, pred))
+    pred = inference(dataset, model, batch, samples)
+    save_results(pred, dataset, samples / batch)
+    print(classification_report(dataset.targets[:samples], pred))
     
 
     
