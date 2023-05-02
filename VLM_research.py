@@ -118,7 +118,7 @@ def main():
     model = VLM(device)
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
     groundtruths, pred = inference(dataset, model)
-    # print(classification_report(groundtruths, pred, labels=types))
+    print(classification_report(groundtruths, pred, labels=types))
 
 
 if __name__ == '__main__':
