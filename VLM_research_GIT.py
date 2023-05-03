@@ -1,4 +1,4 @@
-from transformers import ViltProcessor, ViltForQuestionAnswering
+from transformers import AutoProcessor, AutoModelForCausalLM
 import requests
 from PIL import Image
 import numpy as np
@@ -70,22 +70,27 @@ class VLM:
     def __init__(self, device):
         # print("Loading VLM")
         self.device = device
-        self.processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
-        self.model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
+        self.processor = AutoProcessor.from_pretrained("microsoft/git-base-textvqa")
+        self.model = AutoModelForCausalLM.from_pretrained("microsoft/git-base-textvqa")
    
     def forward_caption(self, image, text):
         # print("Create caption")
-        encoding = self.processor(image, text, return_tensors="pt").to(device=self.device)
+        encoding = self.processor(images=image, return_tensors="pt").pixel_values.to(self.device)
         self.model.to(self.device)
-        outputs = self.model(**encoding)
-        logits = outputs.logits
-        idxs = [logit.argmax(-1).item() for logit in logits]
-        return [self.model.config.id2label[idx] for idx in idxs]
-
+        input_ids = self.processor(text=text, add_special_tokens=False).input_ids
+        input_ids = [self.processor.tokenizer.cls_token_id] + input_ids
+        input_ids = torch.tensor(input_ids).unsqueeze(0)
+        input_ids = input_ids.to(self.device)
+        generated_ids = self.model.generate(pixel_values=encoding, input_ids=input_ids, max_length=50)
+        return self.processor.batch_decode(generated_ids[:, input_ids.shape[1]:], skip_special_tokens=True)
+    
     def forward(self, image):
-        text = "What is the geometric shape of the object?"
+        text = "How many vertices does the geometric shape have?"
         textbatch = [text for i in range(len(image))]
-        return self.forward_caption(image, textbatch)
+        answer = []
+        for i in range(len(textbatch)):
+            answer.append(self.forward_caption(image[i], textbatch[i])[0])
+        return answer
 
 def inference(dataset, model):
     count = 0
@@ -98,13 +103,30 @@ def inference(dataset, model):
         image, groundtruth = image_groundtruth
         convertimage = [Image.fromarray(single_image).convert("RGB") for single_image in image]
         out = model.forward(convertimage)
+        outnew = out.copy()
+        for iout, predout in enumerate(out):
+            if predout.isnumeric():
+                if int(predout) == 0:
+                    outnew[iout] = "circle"
+                elif int(predout[0]) == 3:
+                    outnew[iout] = "triangle"
+                elif int(predout) == 4:
+                    outnew[iout] = "square"
+                elif int(predout) == 5:
+                    outnew[iout] = "pentagon"
+                elif int(predout) == 6:
+                    outnew[iout] = "hexagon"
+                else:
+                    outnew[iout] = "none"
+            else:
+                outnew[iout] = "none"
         groundtruthclass = [types[g[0]] for g in groundtruth]
-        count += sum(a == b for a, b in zip(out, groundtruthclass))
+        count += sum(a == b for a, b in zip(outnew, groundtruthclass))
         print(f"The count is equal to:{count} for image {index}")
-        for output,gclass in zip(out,groundtruthclass):
+        for output,gclass in zip(outnew,groundtruthclass):
             predictions.append(output)
             groundtruths.append(gclass)
-    np.savez('VilT_performance_geometric_shape', predictions=np.array(predictions), targets=np.array(groundtruths))
+    np.savez('GIT_performance_ask_vertices', predictions=np.array(predictions), targets=np.array(groundtruths))
 
     return groundtruths, predictions
 
