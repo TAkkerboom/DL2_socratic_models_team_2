@@ -7,7 +7,7 @@ IMGS = 1
 
 # Read the npz file
 for i in range(IMGS):
-    data = np.load('RAVEN-10000\center_single\RAVEN_' + str(i) + '_train.npz')
+    data = np.load('./dataset/RAVEN-10000\center_single\RAVEN_' + str(i) + '_train.npz')
 
     # Access the data in the npz file
     data_array = data['image']
@@ -45,5 +45,5 @@ for i in range(IMGS):
     image_grid[320:480, 320:480] = data_array[8+data['target']]
     plt.title('Solution {}'.format(i))
     plt.imshow(image_grid)
-    plt.show()
+    plt.savefig("./figures/mygraph.png")
 
