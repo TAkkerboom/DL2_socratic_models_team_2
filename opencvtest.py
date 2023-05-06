@@ -7,6 +7,9 @@ from sklearn.metrics import classification_report
 import xml.etree.ElementTree as ET
 from plot_raven_mod import plot_raven
 import torch
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
 
 class Dataloader:
 
@@ -35,7 +38,7 @@ class Dataloader:
             #access the variables
             type = int(entity.get('Type'))
             #print the variables
-            groundtruthshapes.append([type])
+            groundtruthshapes.append(type)
         self.groundtruthshapes = groundtruthshapes[:8]
     
     def process(self):
@@ -66,26 +69,48 @@ class Raven:
         pass
 
 
-class VLM:   
-    def __init__(self, device):
-        # print("Loading VLM")
-        self.device = device
-        self.processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
-        self.model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
-   
-    def forward_caption(self, image, text):
-        # print("Create caption")
-        encoding = self.processor(image, text, return_tensors="pt").to(device=self.device)
-        self.model.to(self.device)
-        outputs = self.model(**encoding)
-        logits = outputs.logits
-        idxs = [logit.argmax(-1).item() for logit in logits]
-        return [self.model.config.id2label[idx] for idx in idxs]
+class openCV_shape:   
+    def __init__(self):
+        pass
 
-    def forward(self, image):
-        text = "What is the geometric shape of the object?"
-        textbatch = [text for i in range(len(image))]
-        return self.forward_caption(image, textbatch)
+    def detect_shape(self, images):
+        # converting image into grayscale image
+        shapes = []
+        for image in images:
+            gray = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2GRAY)
+            
+            # setting threshold of gray image
+            _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            
+            # using a findContours() function
+            contours, _ = cv2.findContours(
+                threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                     
+            # list for storing names of shapes
+            contour = contours[-1]
+                   
+            # cv2.approxPloyDP() function to approximate the shape
+            approx = cv2.approxPolyDP(
+                contour, 0.01 * cv2.arcLength(contour, True), True)
+            if len(approx) == 3:
+                shapes.append("triangle")
+                print("triangle")
+            elif len(approx) == 4:
+                shapes.append("square")
+                print("square")
+            elif len(approx) == 5:
+                shapes.append("pentagon")
+                print("pentagon")
+            elif len(approx) == 6:
+                shapes.append("hexagon")
+                print("hexagon")
+            else:
+                shapes.append("circle")
+                print("circle")
+        return shapes
+
+    def forward(self, images):
+        return self.detect_shape(images)
 
 def inference(dataset, model):
     count = 0
@@ -98,13 +123,13 @@ def inference(dataset, model):
         image, groundtruth = image_groundtruth
         convertimage = [Image.fromarray(single_image).convert("RGB") for single_image in image]
         out = model.forward(convertimage)
-        groundtruthclass = [types[g[0]] for g in groundtruth]
+        groundtruthclass = [types[g] for g in groundtruth]
         count += sum(a == b for a, b in zip(out, groundtruthclass))
         print(f"The count is equal to:{count} for image {index}")
         for output,gclass in zip(out,groundtruthclass):
             predictions.append(output)
             groundtruths.append(gclass)
-    np.savez('VilT_performance_geometric_shape', predictions=np.array(predictions), targets=np.array(groundtruths))
+    np.savez('OpenCV_test', predictions=np.array(predictions), targets=np.array(groundtruths))
 
     return groundtruths, predictions
 
@@ -115,7 +140,7 @@ def main():
     dataset.forward()
     print("Loading Model")
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = VLM(device)
+    model = openCV_shape()
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
     groundtruths, pred = inference(dataset, model)
     print(classification_report(groundtruths, pred, labels=types))
@@ -123,3 +148,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+  
+# reading image
+img = cv2.imread('shapes.png')
+  
