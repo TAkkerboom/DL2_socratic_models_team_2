@@ -1,4 +1,5 @@
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, AutoModelForCausalLM, OPTForCausalLM, AutoModelWithLMHead, OPTForQuestionAnswering, TFAutoModelForQuestionAnswering
+
 import numpy as np
 from os import listdir
 import os
@@ -129,19 +130,21 @@ class Raven:
 
 class LM:
     
-    def __init__(self, model, device):
+    def __init__(self, model, device, model_class):
         logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model)
+        self.model = model_class.from_pretrained(model) # for t5
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.device = device
+        self.model.to(device)
         
     def forward(self, batch):
         # inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
         inputs = {key: value.to(self.device) for key, value in self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True).items()}
-        outputs = self.model.generate(**inputs, max_length=80).to(self.device)
+        outputs = self.model.generate(**inputs, max_length=512).to(self.device) # , max_length=512 for t5
+        print(outputs)
         return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
     
-    
+   
 def create_batches(data, batch_size):
     return [data[x:x+batch_size] for x in range(0, len(data), batch_size)]
 
@@ -165,23 +168,37 @@ def inference(dataset, model, batch_size, samples):
             
     return predictions
 
-def save_results(pred, dataset, samples):
+def save_results(pred, dataset, samples, model):
     now = datetime.datetime.now()
     curr_time = now.strftime('%m%d%H%M')
-    np.savez('center_single_res_' + curr_time, predictions=np.array(pred), targets=dataset.targets[:int(samples)])
-    print('saved as center_single_res_' + curr_time)
+    np.savez('res_' + model.replace("/", "") + curr_time, predictions=np.array(pred), targets=dataset.targets[:int(samples)])
+    print('saved as res_' + curr_time)
 
-def main():
+def main(infer=inference, mod='flanT5_large', research_class=LM):
+    models = {'flanT5_large': ["google/flan-t5-large", AutoModelForSeq2SeqLM],
+              'flanT5_xl': ["google/flan-t5-xl", AutoModelForSeq2SeqLM],
+            #   'OPT': ["facebook/opt-2.7b", OPTForCausalLM],
+                'OPT': ["facebook/opt-350m", OPTForQuestionAnswering],
+              'distilbert' : ['distilbert-base-uncased', TFAutoModelForQuestionAnswering],
+              'openassistant': ["https://api-inference.huggingface.co/models/OpenAssistant/oasst-sft-1-pythia-12b", None]
+              }
+
     dataset = Raven()  
     print('loading data...')     
     dataset.forward()
-    model_version = "google/flan-t5-large"
+
+    # specify which model from models you want to select
+    selected_model = models.get(mod, mod)
+    model_version, model_class = selected_model
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('loading model {}...'.format(model_version))
-    model = LM(model_version, device)
+    model = research_class(model_version, device, model_class)
+
     # data and model to device
-    model.model.to(device)
     dataset.to_gpu(device)
+
+    # starting inference loop with args
     print('running ... (this may take some time)')
     batch = 10
     samples = 1000
@@ -191,12 +208,11 @@ def main():
     print('test samples: ', samples)
     print('device: ', device)
     print('<----------------->')
-    pred = inference(dataset, model, batch, samples)
-    save_results(pred, dataset, samples / batch)
+    pred = infer(dataset, model, batch, samples)
+    save_results(pred, dataset, samples / batch, model_version)
     print(classification_report(dataset.targets[:samples], pred))
     
-
     
 if __name__ == '__main__':
-    main()
+    main(inference, 'flanT5_large', research_class=LM)
     
