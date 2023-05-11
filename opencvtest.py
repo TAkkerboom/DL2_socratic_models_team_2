@@ -37,8 +37,11 @@ class Dataloader:
             entity = component.find('Layout/Entity')
             #access the variables
             type = int(entity.get('Type'))
+            angle = int(entity.get('Angle'))
+            color = int(entity.get('Color'))
+            size = int(entity.get('Size'))
             #print the variables
-            groundtruthshapes.append(type)
+            groundtruthshapes.append([type,angle,color,size])
         self.groundtruthshapes = groundtruthshapes[:8]
     
     def process(self):
@@ -58,7 +61,7 @@ class Raven:
     
     def forward(self):
         i = 0
-        endimage = len(self.npz_data)
+        endimage = 2
         for npz, xml in zip(self.npz_data[:endimage], self.xml_data[:endimage]):
             data_point = Dataloader('{}/{}'.format(self.path, npz), '{}/{}'.format(self.path, xml))
             data_point.process()
@@ -77,7 +80,8 @@ class openCV_shape:
         # converting image into grayscale image
         shapes = []
         for image in images:
-            gray = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2GRAY)
+            cvimage = np.asarray(image)
+            gray = cv2.cvtColor(cvimage, cv2.COLOR_BGR2GRAY)
             
             # setting threshold of gray image
             _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
@@ -107,6 +111,12 @@ class openCV_shape:
             else:
                 shapes.append("circle")
                 print("circle")
+            maskImage = np.zeros(cvimage.shape, dtype=np.uint8)
+            cv2.drawContours(maskImage, contours, -1, (255, 255, 255), -1)
+            colorimage = cv2.bitwise_not(cvimage, maskImage)
+            max_color = np.amax(colorimage)
+            print(str(max_color))
+
         return shapes
 
     def forward(self, images):
@@ -117,6 +127,8 @@ def inference(dataset, model):
     predictions = []
     groundtruths = []
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
+    colors = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
+    angles = [-135, -90, -45, 0, 45, 90, 135, 180]
     # print("Inference of the model")
     count = 0 
     for index, image_groundtruth in enumerate(zip(dataset.images, dataset.groundtruthshapes)):
