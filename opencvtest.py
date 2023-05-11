@@ -159,11 +159,8 @@ def inference(dataset, model):
         for i in range(len(typelist)):
             groundtruthclass.append([typelist[i],colorlist[i],sizelist[i]])
         count += sum(a == b for a, b in zip(out, groundtruthclass))
-        print(f"out is equal to {out}")
-        print(f"groundtruth is equal to {groundtruthclass}")
-        for output,gclass in zip(out,groundtruthclass):
-            predictions.append(output)
-            groundtruths.append(gclass)
+        predictions.append(out)
+        groundtruths.append(groundtruthclass)
     np.savez('OpenCV_test_complete', predictions=np.array(predictions), targets=np.array(groundtruths))
 
     return groundtruths, predictions
