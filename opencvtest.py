@@ -37,11 +37,11 @@ class Dataloader:
             entity = component.find('Layout/Entity')
             #access the variables
             type = int(entity.get('Type'))
-            angle = int(entity.get('Angle'))
+            # angle = int(entity.get('Angle'))
             color = int(entity.get('Color'))
-            size = int(entity.get('Size'))
+            # size = int(entity.get('Size'))
             #print the variables
-            groundtruthshapes.append([type,angle,color,size])
+            groundtruthshapes.append([type,color,size])
         self.groundtruthshapes = groundtruthshapes[:8]
     
     def process(self):
@@ -76,6 +76,25 @@ class openCV_shape:
     def __init__(self):
         pass
 
+    def detect_color(self,image,contour):
+        maskImage = np.zeros(image.shape, dtype=np.uint8)
+        cv2.drawContours(maskImage, contour, -1, (255, 255, 255), -1)
+        colorimage = cv2.bitwise_not(image, maskImage)
+        max_color = np.amax(colorimage)
+        COLOR_VALUES = [255, 224, 196, 168, 140, 112, 84, 56, 28, 0]
+        colorindex = COLOR_VALUES.index(max_color)
+        color_values = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
+        color = color_values[colorindex]
+        return color
+    
+    def detect_size(self,image,contour):
+        area = cv2.contourArea(contour)
+        imagesize = image.shape[0]*image.shape[1]
+        size = int(area)/int(imagesize)
+        size = round(size, 1)
+
+        return size    
+    
     def detect_shape(self, images):
         # converting image into grayscale image
         shapes = []
@@ -98,24 +117,22 @@ class openCV_shape:
                 contour, 0.01 * cv2.arcLength(contour, True), True)
             if len(approx) == 3:
                 shapes.append("triangle")
-                print("triangle")
+                shape = "triangle"
             elif len(approx) == 4:
                 shapes.append("square")
-                print("square")
+                shape = "square"
             elif len(approx) == 5:
                 shapes.append("pentagon")
-                print("pentagon")
+                shape = "pentagon"
             elif len(approx) == 6:
                 shapes.append("hexagon")
-                print("hexagon")
+                shape = "hexagon"
             else:
                 shapes.append("circle")
-                print("circle")
-            maskImage = np.zeros(cvimage.shape, dtype=np.uint8)
-            cv2.drawContours(maskImage, contours, -1, (255, 255, 255), -1)
-            colorimage = cv2.bitwise_not(cvimage, maskImage)
-            max_color = np.amax(colorimage)
-            print(str(max_color))
+                shape = "circle"
+            color = self.detect_color(cvimage,contour)
+            size = self.detect_shape(cvimage,contour)
+            shapes.append([shape,color,size])
 
         return shapes
 
@@ -128,20 +145,24 @@ def inference(dataset, model):
     groundtruths = []
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
     colors = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
-    angles = [-135, -90, -45, 0, 45, 90, 135, 180]
+    size = [0.4,0.5,0.6,0.7,0.8,0.9]
     # print("Inference of the model")
     count = 0 
     for index, image_groundtruth in enumerate(zip(dataset.images, dataset.groundtruthshapes)):
         image, groundtruth = image_groundtruth
         convertimage = [Image.fromarray(single_image).convert("RGB") for single_image in image]
         out = model.forward(convertimage)
-        groundtruthclass = [types[g] for g in groundtruth]
+        typelist = [types[g] for g[0] in groundtruth]
+        colorlist = [colors[g] for g[1] in groundtruth]
+        sizelist = [sizes[g] for g[2] in groundtruth]
+        groundtruthclass = [typelist,colorlist,sizelist]
         count += sum(a == b for a, b in zip(out, groundtruthclass))
-        print(f"The count is equal to:{count} for image {index}")
+        print(f"out is equal to {out}")
+        print(f"groundtruth is equal to {groundtruthclass}")
         for output,gclass in zip(out,groundtruthclass):
             predictions.append(output)
             groundtruths.append(gclass)
-    np.savez('OpenCV_test', predictions=np.array(predictions), targets=np.array(groundtruths))
+    np.savez('OpenCV_test_complete', predictions=np.array(predictions), targets=np.array(groundtruths))
 
     return groundtruths, predictions
 
