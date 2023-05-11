@@ -39,7 +39,7 @@ class Dataloader:
             type = int(entity.get('Type'))
             # angle = int(entity.get('Angle'))
             color = int(entity.get('Color'))
-            # size = int(entity.get('Size'))
+            size = int(entity.get('Size'))
             #print the variables
             groundtruthshapes.append([type,color,size])
         self.groundtruthshapes = groundtruthshapes[:8]
@@ -155,7 +155,9 @@ def inference(dataset, model):
         typelist = [types[g] for g[0] in groundtruth]
         colorlist = [colors[g] for g[1] in groundtruth]
         sizelist = [sizes[g] for g[2] in groundtruth]
-        groundtruthclass = [typelist,colorlist,sizelist]
+        groundtruthclass = []
+        for i in range(len(typelist)):
+            groundtruthclass.append([typelist[i],colorlist[i],sizelist[i]])
         count += sum(a == b for a, b in zip(out, groundtruthclass))
         print(f"out is equal to {out}")
         print(f"groundtruth is equal to {groundtruthclass}")
