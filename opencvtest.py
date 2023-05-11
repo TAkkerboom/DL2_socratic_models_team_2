@@ -147,7 +147,8 @@ def inference(dataset, model):
     colors = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
     size = [0.4,0.5,0.6,0.7,0.8,0.9]
     # print("Inference of the model")
-    count = 0 
+    count = 0
+    complete = 0 
     for index, image_groundtruth in enumerate(zip(dataset.images, dataset.groundtruthshapes)):
         image, groundtruth = image_groundtruth
         convertimage = [Image.fromarray(single_image).convert("RGB") for single_image in image]
@@ -159,10 +160,11 @@ def inference(dataset, model):
         for i in range(len(typelist)):
             groundtruthclass.append([typelist[i],colorlist[i],sizelist[i]])
         count += sum(a == b for a, b in zip(out, groundtruthclass))
+        complete += len(out)
         predictions.append(out)
         groundtruths.append(groundtruthclass)
     np.savez('OpenCV_test_complete', predictions=np.array(predictions), targets=np.array(groundtruths))
-
+    print(f"complete accuracy:{count/complete}")
     return groundtruths, predictions
 
 
@@ -173,9 +175,9 @@ def main():
     print("Loading Model")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = openCV_shape()
-    types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
-    groundtruths, pred = inference(dataset, model)
-    print(classification_report(groundtruths, pred, labels=types))
+    # types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
+    # groundtruths, pred = inference(dataset, model)
+    # print(classification_report(groundtruths, pred, labels=types))
 
 
 if __name__ == '__main__':
