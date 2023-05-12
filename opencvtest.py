@@ -62,7 +62,7 @@ class Raven:
     
     def forward(self):
         i = 0
-        endimage = 2
+        endimage = len(self.npz_data)
         for npz, xml in zip(self.npz_data[:endimage], self.xml_data[:endimage]):
             data_point = Dataloader('{}/{}'.format(self.path, npz), '{}/{}'.format(self.path, xml))
             data_point.process()
@@ -137,15 +137,13 @@ class openCV_shape:
         return self.detect_shape(images)
 
 def inference(dataset, model):
-    count = 0
-    predictions = []
-    groundtruths = []
+    predclass, predsize, predcolor = [], [], []
+    groundclass,groundsize, groundcolor  = [] , [], []
+    predictions, groundtruths = [], []
     types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
     colors = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
     size = [0.4,0.5,0.6,0.7,0.8,0.9]
     # print("Inference of the model")
-    count = 0
-    complete = 0 
     for index, image_groundtruth in enumerate(zip(dataset.images, dataset.groundtruthshapes)):
         image, groundtruth = image_groundtruth
         out = model.forward(image)
@@ -155,13 +153,16 @@ def inference(dataset, model):
         groundtruthclass = []
         for i in range(len(typelist)):
             groundtruthclass.append([typelist[i],colorlist[i],sizelist[i]])
-        count += sum(a == b for a, b in zip(out, groundtruthclass))
-        complete += len(out)
         predictions.append(out)
         groundtruths.append(groundtruthclass)
+        groundclass.append(typelist)
+        groundsize.append(sizelist)
+        groundcolor.append(colorlist)
+        predclass.append([o[0] for o in out])
+        predsize.append([o[2] for o in out])
+        predcolor.append([o[1] for o in out])
     np.savez('OpenCV_test_complete', predictions=np.array(predictions), targets=np.array(groundtruths))
-    print(f"complete accuracy:{count/complete}")
-    return groundtruths, predictions
+    return groundclass,groundsize, groundcolor, predclass, predsize, predcolor
 
 
 def main():
@@ -171,9 +172,13 @@ def main():
     print("Loading Model")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = openCV_shape()
-    # types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
-    groundtruths, pred = inference(dataset, model)
-    # print(classification_report(groundtruths, pred, labels=types))
+    types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
+    colors = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
+    size = [0.4,0.5,0.6,0.7,0.8,0.9]
+    groundclass,groundsize, groundcolor, predclass, predsize, predcolor = inference(dataset, model)
+    print(classification_report(groundclass, predclass, labels=types))
+    print(classification_report(groundsize, predsize, labels=size))
+    print(classification_report(groundcolor, predcolor, labels=colors))
 
 
 if __name__ == '__main__':
