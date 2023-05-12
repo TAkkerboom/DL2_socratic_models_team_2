@@ -10,6 +10,7 @@ import torch
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import math
 
 class Dataloader:
 
@@ -77,12 +78,12 @@ class openCV_shape:
         pass
 
     def detect_color(self,image,contour):
-        maskImage = np.zeros(image.shape, dtype=np.uint8)
-        cv2.drawContours(maskImage, contour, -1, (255, 255, 255), -1)
-        colorimage = cv2.bitwise_not(image, maskImage)
-        max_color = np.amax(colorimage)
+        mask = np.zeros(image.shape, dtype=np.uint8)
+        mask = cv2.fillPoly(mask, pts =[contour], color=(255)) # fill the polygon
+        colorimage = cv2.bitwise_and(image, mask)
+        colorindexed = colorimage[int(colorimage.shape[0]/2),int(colorimage.shape[0]/2)]
         COLOR_VALUES = [255, 224, 196, 168, 140, 112, 84, 56, 28, 0]
-        colorindex = COLOR_VALUES.index(max_color)
+        colorindex = COLOR_VALUES.index(colorindexed)
         color_values = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
         color = color_values[colorindex]
         return color
@@ -90,20 +91,21 @@ class openCV_shape:
     def detect_size(self,image,contour):
         area = cv2.contourArea(contour)
         imagesize = image.shape[0]*image.shape[1]
-        size = int(area)/int(imagesize)
-        size = round(size, 1)
-
+        size = int(area)/int(imagesize) + 0.3
+        if size >0.9:
+            size = 0.9
+        elif size<0.4:
+            size = 0.4
+        else:
+            size = math.ceil(size*10)/10
         return size    
     
     def detect_shape(self, images):
         # converting image into grayscale image
         shapes = []
         for image in images:
-            cvimage = np.asarray(image)
-            gray = cv2.cvtColor(cvimage, cv2.COLOR_BGR2GRAY)
-            
             # setting threshold of gray image
-            _, threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            _, threshold = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
             
             # using a findContours() function
             contours, _ = cv2.findContours(
@@ -116,22 +118,17 @@ class openCV_shape:
             approx = cv2.approxPolyDP(
                 contour, 0.01 * cv2.arcLength(contour, True), True)
             if len(approx) == 3:
-                shapes.append("triangle")
                 shape = "triangle"
             elif len(approx) == 4:
-                shapes.append("square")
                 shape = "square"
             elif len(approx) == 5:
-                shapes.append("pentagon")
                 shape = "pentagon"
             elif len(approx) == 6:
-                shapes.append("hexagon")
                 shape = "hexagon"
             else:
-                shapes.append("circle")
                 shape = "circle"
-            color = self.detect_color(cvimage,contour)
-            size = self.detect_shape(cvimage,contour)
+            color = self.detect_color(image,contour)
+            size = self.detect_size(image,contour)
             shapes.append([shape,color,size])
 
         return shapes
@@ -151,11 +148,10 @@ def inference(dataset, model):
     complete = 0 
     for index, image_groundtruth in enumerate(zip(dataset.images, dataset.groundtruthshapes)):
         image, groundtruth = image_groundtruth
-        convertimage = [Image.fromarray(single_image).convert("RGB") for single_image in image]
-        out = model.forward(convertimage)
-        typelist = [types[g] for g[0] in groundtruth]
-        colorlist = [colors[g] for g[1] in groundtruth]
-        sizelist = [sizes[g] for g[2] in groundtruth]
+        out = model.forward(image)
+        typelist = [types[g[0]] for g in groundtruth]
+        colorlist = [colors[g[1]] for g in groundtruth]
+        sizelist = [size[g[2]] for g in groundtruth]
         groundtruthclass = []
         for i in range(len(typelist)):
             groundtruthclass.append([typelist[i],colorlist[i],sizelist[i]])
@@ -176,15 +172,11 @@ def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = openCV_shape()
     # types = ["none", "triangle", "square", "pentagon", "hexagon", "circle"]
-    # groundtruths, pred = inference(dataset, model)
+    groundtruths, pred = inference(dataset, model)
     # print(classification_report(groundtruths, pred, labels=types))
 
 
 if __name__ == '__main__':
     main()
 
-
-  
-# reading image
-img = cv2.imread('shapes.png')
   
