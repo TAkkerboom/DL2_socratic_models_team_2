@@ -1,5 +1,5 @@
 from src.dataset import Raven
-from src.model import VLM
+from src.model import VLM, OpenCV
 from LM_research import LM
 from PIL import Image
 import numpy as np
@@ -48,6 +48,17 @@ class SM:
 
         return answers
     
+    def OpenCV_pred_attributes(self):
+        answers = []
+        opencvmodel = OpenCV()
+        for i in range(self.test_set.len()):
+            puzzle = self.test_set.get_puzzle(i)
+            puzzle_answers = []
+            for j, c_image in enumerate(puzzle):
+                puzzle_answers.append(opencvmodel.detect_shape(c_image))
+            answers.append(puzzle_answers)
+        return answers
+            
     def generate_prompts(self, attributes):
         return [self.prompt.format(*[generate_single_description(*shape) for shape in puzzle]) for puzzle in attributes]
 
@@ -82,7 +93,8 @@ class SM:
         return predictions
 
     def forward(self):
-        attributes = self.VLM_pred_attributes() 
+        attributes = self.VLM_pred_attributes()
+        # attributes = self.OpenCV_pred_attributes()
         prompts = self.generate_prompts(attributes)
         descriptions = self.get_descriptions(attributes)
         self.inference(prompts, descriptions, 10, 1000)
