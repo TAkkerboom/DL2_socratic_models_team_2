@@ -1,4 +1,4 @@
-from transformers import BlipProcessor, BlipForQuestionAnswering
+from transformers import BlipProcessor, BlipForQuestionAnswering, AutoTokenizer
 import torch
 import cv2
 import numpy as np
@@ -76,3 +76,19 @@ class OpenCV:
 
     def forward(self, image):
         return self.detect_shape(image)
+    
+
+class LM:
+
+    def __init__(self, model, device, model_class):
+        self.model = model_class.from_pretrained(model) # for t5
+        self.tokenizer = AutoTokenizer.from_pretrained(model)
+        self.device = device
+        self.model.to(device)
+        
+    def forward(self, batch):
+        # inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
+        inputs = {key: value.to(self.device) for key, value in self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True).items()}
+        outputs = self.model.generate(**inputs, max_length=512).to(self.device) # , max_length=512 for t5
+        print(outputs)
+        return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
