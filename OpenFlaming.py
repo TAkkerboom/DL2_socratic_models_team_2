@@ -1,80 +1,89 @@
+from src.dataset import Raven
+from src.model import VLM, LM, OpenCV
+import numpy as np
+import requests
+import matplotlib.pyplot as plt
+from transformers import AutoModelForSeq2SeqLM
 from PIL import Image
 import requests
 from open_flamingo import create_model_and_transforms
-
-model, image_processor, tokenizer = create_model_and_transforms(
-    clip_vision_encoder_path="ViT-L-14",
-    clip_vision_encoder_pretrained="openai",
-    lang_encoder_path="hugginfacellama",
-    tokenizer_path="hugginfacellama",
-    cross_attn_every_n_layers=4
-)
-
-# grab model checkpoint from huggingface hub
 from huggingface_hub import hf_hub_download
 import torch
+from sklearn.metrics import classification_report
+class Flamingo:
 
-checkpoint_path = hf_hub_download("openflamingo/OpenFlamingo-9B", "checkpoint.pt")
-model.load_state_dict(torch.load(checkpoint_path), strict=False)
+    def __init__(self,device):
+        self.PATH = "RAVEN-10000"
+        fig_types = ['center_single']
 
-"""
-Step 1: Load images
-"""
-demo_image_one = Image.open(
-    requests.get(
-        "http://images.cocodataset.org/val2017/000000039769.jpg", stream=True
-    ).raw
-)
+        self.test_set = Raven(self.PATH, 'test', fig_types[0])
+        self.test_set.load_data()
 
-demo_image_two = Image.open(
-    requests.get(
-        "http://images.cocodataset.org/test-stuff2017/000000028137.jpg",
-        stream=True
-    ).raw
-)
-
-query_image = Image.open(
-    requests.get(
-        "http://images.cocodataset.org/test-stuff2017/000000028352.jpg", 
-        stream=True
-    ).raw
-)
+        self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The puzzle looks like <|endofchunk|><image>.
+        Based on this image, what is the third shape on the third row? You can only choose between the following shapes:
+        Shape 1: <|endofchunk|><image>, Shape 2: <|endofchunk|><image>, Shape 3: <|endofchunk|><image>, Shape 4: <|endofchunk|><image>,
+        Shape 5: <|endofchunk|><image>, Shape 6: <|endofchunk|><image>, Shape 7: <|endofchunk|><image>, Shape 8: <|endofchunk|><image>'''
+        self.flamingomodel, self.image_processor, self.tokenizer = create_model_and_transforms(
+                                                            clip_vision_encoder_path="ViT-L-14",
+                                                            clip_vision_encoder_pretrained="openai",
+                                                            lang_encoder_path="hugginfacellama",
+                                                            tokenizer_path="hugginfacellama",
+                                                            cross_attn_every_n_layers=4
+                                                        )
+        checkpoint_path = hf_hub_download("openflamingo/OpenFlamingo-9B", "checkpoint.pt")
+        self.flamingomodel.load_state_dict(torch.load(checkpoint_path), strict=False)
+        self.flamingomodel.to(device)
 
 
-"""
-Step 2: Preprocessing images
-Details: For OpenFlamingo, we expect the image to be a torch tensor of shape 
- batch_size x num_media x num_frames x channels x height x width. 
- In this case batch_size = 1, num_media = 3, num_frames = 1 
- (this will always be one expect for video which we don't support yet), 
- channels = 3, height = 224, width = 224.
-"""
-vision_x = [image_processor(demo_image_one).unsqueeze(0), image_processor(demo_image_two).unsqueeze(0), image_processor(query_image).unsqueeze(0)]
-vision_x = torch.cat(vision_x, dim=0)
-vision_x = vision_x.unsqueeze(1).unsqueeze(0)
+    def Preprocess(self,puzzle):
+        self.vision_x=[]
+        for i in puzzle:
+            self.vision_x.append(self.image_processor(i).unsqueeze(0))
+        self.vision_x = torch.cat(self.vision_x, dim=0)
+        self.vision_x = self.vision_x.unsqueeze(1).unsqueeze(0)
 
-"""
-Step 3: Preprocessing text
-Details: In the text we expect an <image> special token to indicate where an image is.
- We also expect an <|endofchunk|> special token to indicate the end of the text 
- portion associated with an image.
-"""
-tokenizer.padding_side = "left" # For generation padding tokens should be on the left
-lang_x = tokenizer(
-    ["<image>An image of two cats.<|endofchunk|><image>An image of a bathroom sink.<|endofchunk|><image>An image of"],
-    return_tensors="pt",
-)
+    def TokenizerFlamingo(self):
+        self.tokenizer.padding_side = "left" # For generation padding tokens should be on the left
+        self.lang_x = self.tokenizer(
+            [self.prompt],
+            return_tensors="pt",
+        )
+    
+    def InferenceFlamingo(self):
+        self.generated_text = self.flamingomodel.generate(
+            vision_x=self.vision_x,
+            lang_x=self.lang_x["input_ids"],
+            attention_mask=self.lang_x["attention_mask"],
+            max_new_tokens=20,
+            num_beams=3,
+            )
+
+    def inference(self):
+        predictions = []
+        targets = []
+        for i in range(self.test_set.len()):
+            puzzleanswers = self.test_set.get_puzzle(i)[8:]
+            completepuzzle = Image.fromarray(self.test_set.items[i].grid).convert("P")
+            puzzleanswers = [completepuzzle]+puzzleanswers
+            self.Preprocess(puzzleanswers)
+            self.TokenizerFlamingo()
+            self.InferenceFlamingo()
+
+            prediction =self.tokenizer.decode(self.generated_text[0])
+            targets.append(self.test_set.get_answers(i))
+            predictionnum = int(''.join(filter(str.isdigit, prediction)))-1
+            predictions.append(predictionnum)
+         
+        return predictions, targets
+
+    def forward(self):
+        prediction, targets = self.inference()
+        np.savez('Flamingo', predictions=np.array(prediction), targets=np.array(targets))
+        print(classification_report(targets, prediction, labels=list(range(0, 8))))
 
 
-"""
-Step 4: Generate text
-"""
-generated_text = model.generate(
-    vision_x=vision_x,
-    lang_x=lang_x["input_ids"],
-    attention_mask=lang_x["attention_mask"],
-    max_new_tokens=20,
-    num_beams=3,
-)
 
-print("Generated text: ", tokenizer.decode(generated_text[0]))
+if __name__ == '__main__':
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    FlamingoModel = Flamingo(device)
+    FlamingoModel.forward()
