@@ -1,6 +1,5 @@
 from src.dataset import Raven
-from src.model import VLM, OpenCV
-from LM_research import LM
+from src.model import VLM, LM, OpenCV
 from PIL import Image
 import numpy as np
 import requests
@@ -98,3 +97,71 @@ class SM:
         prompts = self.generate_prompts(attributes)
         descriptions = self.get_descriptions(attributes)
         self.inference(prompts, descriptions, 10, 1000)
+
+
+class Demo:
+
+    def __init__(self):
+        self.PATH = "C:/Users/maart/Downloads/RAVEN-10000-release/RAVEN-10000"
+        fig_types = ['center_single']
+
+        self.test_set = Raven(self.PATH, 'test', fig_types[0])
+        self.test_set.load_data()
+
+        self.VLM = VLM()
+        self.LM = LM("google/flan-t5-large", 'cpu', AutoModelForSeq2SeqLM)
+        self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}'''
+
+
+    def VLM_pred_attributes(self, puzzle):
+        puzzle_answers = []
+        for j, c_image in enumerate(puzzle):
+            angle = self.VLM.forward(c_image, 'At what angle is the figure located? The options are: -135, 90, -45, 0, 45, 90, 135, 180')
+            color = self.VLM.forward(c_image, 'What is the color value of the figure?')
+            size = self.VLM.forward(c_image, 'What is the size of the figure? The options are: 0.4, 0.5, 0.6, 0.7, 0.8, 0.9')
+            type = self.VLM.forward(c_image, 'What is the shape of the figure? The options are: triangle, square, pentagon, hexagon, circle')
+            puzzle_answers.append([angle, color, size, type])
+        return puzzle_answers
+    
+    def OpenCV_pred_attributes(self):
+        answers = []
+        opencvmodel = OpenCV()
+        for i in range(self.test_set.len()):
+            puzzle = self.test_set.get_puzzle(i)
+            puzzle_answers = []
+            for j, c_image in enumerate(puzzle):
+                puzzle_answers.append(opencvmodel.detect_shape(c_image))
+            answers.append(puzzle_answers)
+        return answers
+            
+    def generate_prompts(self, attributes):
+        return [self.prompt.format(*[generate_single_description(*shape) for shape in puzzle]) for puzzle in attributes]
+
+    def get_descriptions(self, attributes):
+        descriptions = []
+        for puzzle in attributes:
+            shape_desc = []
+            for shape in puzzle[-8:]:
+                for angle, color, size, type in shape:
+                    shape_desc.append(generate_single_description(angle, color, size, type))
+            descriptions.append(shape_desc)
+        return descriptions
+
+    def inference(self, prompt, description):
+        pred = self.LM.forward(prompt)
+        return pred
+
+    def forward(self):
+        for i in range(5):
+            puzzle = self.test_set.get_puzzle(i)
+            attributes = self.VLM_pred_attributes(puzzle)
+            print(attributes)
+            prompt = self.generate_prompts(attributes)
+            descriptions = self.get_descriptions(attributes)
+            pred = self.inference(prompt[0], descriptions[0])
+            print(pred)
+
+
+if __name__ == '__main__':
+    sm = Demo()
+    sm.forward()
