@@ -102,14 +102,14 @@ class SM:
 class Demo:
 
     def __init__(self):
-        self.PATH = "C:/Users/maart/Downloads/RAVEN-10000-release/RAVEN-10000"
+        self.PATH = "/home/lcur1645/RAVEN-10000"
         fig_types = ['center_single']
 
         self.test_set = Raven(self.PATH, 'test', fig_types[0])
         self.test_set.load_data()
 
         self.VLM = VLM()
-        self.LM = LM("google/flan-t5-large", 'cpu', AutoModelForSeq2SeqLM)
+        self.LM = LM("google/flan-t5-large", 'cuda', AutoModelForSeq2SeqLM)
         self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}'''
 
 
@@ -135,7 +135,7 @@ class Demo:
         return answers
             
     def generate_prompts(self, attributes):
-        return [self.prompt.format(*[generate_single_description(*shape) for shape in puzzle]) for puzzle in attributes]
+        return self.prompt.format(*[generate_single_description(*shape) for shape in attributes])
 
     def get_descriptions(self, attributes):
         descriptions = []
@@ -147,21 +147,19 @@ class Demo:
             descriptions.append(shape_desc)
         return descriptions
 
-    def inference(self, prompt, description):
+    def inference(self, prompt):
         pred = self.LM.forward(prompt)
         return pred
 
-    def forward(self):
-        for i in range(5):
-            puzzle = self.test_set.get_puzzle(i)
-            attributes = self.VLM_pred_attributes(puzzle)
-            print(attributes)
-            prompt = self.generate_prompts(attributes)
-            descriptions = self.get_descriptions(attributes)
-            pred = self.inference(prompt[0], descriptions[0])
-            print(pred)
-
+    def forward(self, puzzle):
+        attributes = self.VLM_pred_attributes(puzzle)
+        prompt = self.generate_prompts(attributes)
+        pred = self.inference([prompt])
+        print(pred)
+    
 
 if __name__ == '__main__':
     sm = Demo()
-    sm.forward()
+    for i in range(5):
+        puzzle = sm.test_set.get_puzzle(i)
+        sm.forward(puzzle)

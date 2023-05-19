@@ -90,5 +90,4 @@ class LM:
         # inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
         inputs = {key: value.to(self.device) for key, value in self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True).items()}
         outputs = self.model.generate(**inputs, max_length=512).to(self.device) # , max_length=512 for t5
-        print(outputs)
         return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)

@@ -45,9 +45,9 @@ class Raven:
             item.process()
             
             self.items.append(item)
-            print(f"Loading item: {i}")
-            break
-            
+            # print(f"Loading item: {i}")
+
+
 class Item:
     def __init__(self, npz_path, xml_path, id):
         self.xml_path = xml_path
