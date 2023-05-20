@@ -3,37 +3,35 @@ from src.model import VLM, LM, OpenCV
 import numpy as np
 import requests
 import matplotlib.pyplot as plt
-from transformers import AutoModelForSeq2SeqLM
 from PIL import Image
 import requests
 from open_flamingo import create_model_and_transforms
 from huggingface_hub import hf_hub_download
 import torch
 from sklearn.metrics import classification_report
+
 class Flamingo:
 
-    def __init__(self,device):
-        self.PATH = "RAVEN-10000"
-        fig_types = ['center_single']
-
-        self.test_set = Raven(self.PATH, 'test', fig_types[0])
+    def __init__(self,device,fig_type):
+        self.PATH = "/home/lcur1621/DL2_socratic_models_team_2/RAVEN-10000"
+        self.device = device
+        self.fig_type = fig_type
+        self.test_set = Raven(self.PATH, 'test', self.fig_type)
         self.test_set.load_data()
+        print(str(self.test_set.len()))
 
-        self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The puzzle looks like <|endofchunk|><image>.
-        Based on this image, what is the third shape on the third row? You can only choose between the following shapes:
-        Shape 1: <|endofchunk|><image>, Shape 2: <|endofchunk|><image>, Shape 3: <|endofchunk|><image>, Shape 4: <|endofchunk|><image>,
-        Shape 5: <|endofchunk|><image>, Shape 6: <|endofchunk|><image>, Shape 7: <|endofchunk|><image>, Shape 8: <|endofchunk|><image>'''
+        self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The puzzle looks like <image>.
+        Based on this image, what is the third shape on the third row?<|endofchunk|> You can only choose between the following shapes:
+        Shape 1: <image><|endofchunk|>, Shape 2: <image><|endofchunk|>, Shape 3: <image><|endofchunk|>, Shape 4: <image><|endofchunk|>,
+        Shape 5: <image><|endofchunk|>, Shape 6: <image><|endofchunk|>, Shape 7: <image><|endofchunk|>, Shape 8: <image><|endofchunk|>. The answer is shape'''
         self.flamingomodel, self.image_processor, self.tokenizer = create_model_and_transforms(
                                                             clip_vision_encoder_path="ViT-L-14",
                                                             clip_vision_encoder_pretrained="openai",
-                                                            lang_encoder_path="hugginfacellama",
-                                                            tokenizer_path="hugginfacellama",
-                                                            cross_attn_every_n_layers=4
-                                                        )
-        checkpoint_path = hf_hub_download("openflamingo/OpenFlamingo-9B", "checkpoint.pt")
+                                                            lang_encoder_path="/home/lcur1621/DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
+                                                            tokenizer_path="/home/lcur1621/DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
+                                                            cross_attn_every_n_layers=4)
+        checkpoint_path=hf_hub_download("openflamingo/OpenFlamingo-9B", "checkpoint.pt",token = "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")                                                            
         self.flamingomodel.load_state_dict(torch.load(checkpoint_path), strict=False)
-        self.flamingomodel.to(device)
-
 
     def Preprocess(self,puzzle):
         self.vision_x=[]
@@ -59,9 +57,12 @@ class Flamingo:
             )
 
     def inference(self):
+        predictionnums = []
         predictions = []
         targets = []
+        print("Doing inference")
         for i in range(self.test_set.len()):
+            print(f"Loading puzzle:{i}")
             puzzleanswers = self.test_set.get_puzzle(i)[8:]
             completepuzzle = Image.fromarray(self.test_set.items[i].grid).convert("P")
             puzzleanswers = [completepuzzle]+puzzleanswers
@@ -70,20 +71,25 @@ class Flamingo:
             self.InferenceFlamingo()
 
             prediction =self.tokenizer.decode(self.generated_text[0])
+            print(f"The prediction is:{prediction}")
             targets.append(self.test_set.get_answers(i))
             predictionnum = int(''.join(filter(str.isdigit, prediction)))-1
-            predictions.append(predictionnum)
+            predictionnums.append(predictionnum)
+            predictions.append(prediction)
          
-        return predictions, targets
+        return predictions, targets, predictionnums
 
     def forward(self):
-        prediction, targets = self.inference()
-        np.savez('Flamingo', predictions=np.array(prediction), targets=np.array(targets))
-        print(classification_report(targets, prediction, labels=list(range(0, 8))))
+        prediction, targets, predictionnums = self.inference()
+        np.savez('Flamingo'+self.fig_type, predictions=np.array(prediction), targets=np.array(targets))
+        print(classification_report(targets, predictionnums, labels=list(range(0, 8))))
 
 
 
 if __name__ == '__main__':
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    FlamingoModel = Flamingo(device)
-    FlamingoModel.forward()
+    print(device)
+    fig_types = ['center_single', 'distribute_four', 'in_center_single_out_center_single', 'in_distribute_four_out_center_single', 'left_center_single_right_center_single','up_center_single_down_center_single']
+    for fig_type in fig_types:
+        FlamingoModel = Flamingo(device, fig_type=fig_type)
+        FlamingoModel.forward()
