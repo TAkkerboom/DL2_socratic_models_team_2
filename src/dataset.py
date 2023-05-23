@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision import transforms
-from src.const import SHAPES, ANGLES, SIZES, COLORS
+from DL2_socratic_models_team_2.src.const import SHAPES, ANGLES, SIZES, COLORS
 
 
 class Raven:
