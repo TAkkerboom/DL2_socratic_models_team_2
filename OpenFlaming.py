@@ -34,7 +34,7 @@ class Flamingo:
     
     def dataset(self, fig_type):
         self.fig_type = fig_type
-        self.test_set = Raven(self.PATH, 'test', self.fig_type)
+        self.test_set = Raven(self.PATH, self.fig_type)
         self.test_set.load_data()
         print(str(self.test_set.len()))
 
@@ -92,7 +92,7 @@ class Flamingo:
 if __name__ == '__main__':
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(device)
-    fig_types = ['distribute_four', 'in_center_single_out_center_single', 'in_distribute_four_out_center_single', 'left_center_single_right_center_single','up_center_single_down_center_single']
+    fig_types = ['center_single']
     # 'center_single',
     FlamingoModel = Flamingo(device)
     for fig_type in fig_types:
