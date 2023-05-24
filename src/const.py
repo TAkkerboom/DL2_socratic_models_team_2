@@ -19,23 +19,36 @@ ANGLES = {
 }
 
 SIZES = {
-    "0": 0.4,
-    "1": 0.5,
-    "2": 0.6,
-    "3": 0.7,
-    "4": 0.8,
-    "5": 0.9
+    "0": 'tiny',
+    "1": 'small',
+    "2": 'medium',
+    "3": 'large',
+    "4": 'extra large',
+    "5": 'huge'
+}
+
+NAME_TO_COLOR = {
+    'red': (255, 0, 0),
+    'green': (0, 255, 0),
+    'blue': (0, 0, 255),
+    'yellow': (255, 255, 0),
+    'cyan': (0, 255, 255),
+    "brown": (165, 42, 42),
+    'orange': (255, 165, 0),
+    'purple': (128, 0, 128),
+    'pink': (255, 192, 203),
+    'teal': (0, 128, 128)
 }
 
 COLORS = {
-    "0": 255,
-    "1": 224,
-    "2": 196,
-    "3": 168,
-    "4": 140,
-    "5": 112,
-    "6": 84,
-    "7": 56,
-    "8": 28,
-    "9": 0
+    "0": 'red', 
+    "1": 'green', # green
+    "2": 'blue', # blue
+    "3": 'yellow', # yellow
+    "4": 'cyan', # cyan
+    "5": 'brown', # magenta
+    "6": 'orange', # orange
+    "7": 'purple', # purple
+    "8": 'pink', # pink
+    "9": 'teal' # teal
 }
