@@ -3,7 +3,7 @@ import glob
 import numpy as np
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw, ImageFont
 from torchvision import transforms
 from src.const import SHAPES, ANGLES, SIZES, COLORS, NAME_TO_COLOR
 import cv2
@@ -31,12 +31,20 @@ class Raven:
             image = image.convert('RGB')
             
             width, height = image.size
-
+            
+            draw = ImageDraw.Draw(image)
+            
             for y in range(height):
                 for x in range(width):
                     if image_array[y, x] != 255:
                         image.putpixel((x, y), item.colors[i])
-                        
+
+            # Draw the x-axis (red line)
+            draw.line([(0, height // 2), (width - 1, height // 2)], fill=(0, 0, 0), width=1)
+
+            # Draw the y-axis (red line)
+            draw.line([(width // 2, 0), (width // 2, height - 1)], fill=(0, 0, 0), width=1)
+
             puzzle.append(image)
             
         return puzzle
@@ -81,12 +89,12 @@ class Item:
             data = root[0][i][0][0][0][0].attrib
             symbolic = {}
             
-            symbolic['Angle'] = ANGLES[data['Angle']]
-            symbolic['Color'] = COLORS[data['Color']]
-            self.colors.append(NAME_TO_COLOR[symbolic['Color']])
-            symbolic['Size'] = SIZES[data['Size']]
             symbolic['Type'] = SHAPES[data['Type']]
+            symbolic['Color'] = COLORS[data['Color']]
+            symbolic['Angle'] = ANGLES[data['Angle']]            
+            symbolic['Size'] = SIZES[data['Size']]
             
+            self.colors.append(NAME_TO_COLOR[symbolic['Color']])
             self.symbolic[i] = symbolic
                 
     def generate_matrix(self, array_list):

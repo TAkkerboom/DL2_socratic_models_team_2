@@ -18,13 +18,22 @@ ANGLES = {
     "7": '180'
 }
 
+# SIZES = {
+#     "0": 'tiny',
+#     "1": 'small',
+#     "2": 'medium',
+#     "3": 'large',
+#     "4": 'extra large',
+#     "5": 'huge'
+# }
+
 SIZES = {
-    "0": 'tiny',
-    "1": 'small',
-    "2": 'medium',
-    "3": 'large',
-    "4": 'extra large',
-    "5": 'huge'
+    "0": 0.4,
+    "1": 0.5,
+    "2": 0.6,
+    "3": 0.7,
+    "4": 0.8,
+    "5": 0.9
 }
 
 NAME_TO_COLOR = {
