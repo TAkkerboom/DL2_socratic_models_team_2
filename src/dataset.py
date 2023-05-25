@@ -3,10 +3,12 @@ import glob
 import numpy as np
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
-from PIL import Image
+from PIL import Image, ImageOps, ImageDraw, ImageFont
 from torchvision import transforms
-from DL2_socratic_models_team_2.src.const import SHAPES, ANGLES, SIZES, COLORS
+from src.const import SHAPES, ANGLES, SIZES, COLORS, NAME_TO_COLOR
+import cv2
 
+IMAGE_SIZE = 160
 
 class Raven:
     def __init__(self, root='./dataset/RAVEN-10000/', split='test', fig_type='*'):
@@ -24,9 +26,26 @@ class Raven:
         images = item.images[0:16, :, :]
         puzzle = []
         
-        for image in images:
-            img = Image.fromarray(image).convert("P")
-            puzzle.append(img)
+        for i, image_array in enumerate(images):
+            image = Image.fromarray(image_array.astype(np.uint8), mode='L')
+            image = image.convert('RGB')
+            
+            width, height = image.size
+            
+            draw = ImageDraw.Draw(image)
+            
+            for y in range(height):
+                for x in range(width):
+                    if image_array[y, x] != 255:
+                        image.putpixel((x, y), item.colors[i])
+
+            # Draw the x-axis (red line)
+            draw.line([(0, height // 2), (width - 1, height // 2)], fill=(0, 0, 0), width=1)
+
+            # Draw the y-axis (red line)
+            draw.line([(width // 2, 0), (width // 2, height - 1)], fill=(0, 0, 0), width=1)
+
+            puzzle.append(image)
             
         return puzzle
 
@@ -45,9 +64,9 @@ class Raven:
             item.process()
             
             self.items.append(item)
-            # print(f"Loading item: {i}")
-
-
+            print(f"Loading item: {i}")
+            break
+            
 class Item:
     def __init__(self, npz_path, xml_path, id):
         self.xml_path = xml_path
@@ -58,25 +77,8 @@ class Item:
         self.images = npz_data['image']
         self.target_id = npz_data['target']
         self.symbolic = {}
+        self.colors = []
         
-    def get_image(self):        
-        # Create empty array to store the images
-        grid = np.zeros((480, 480))
-        
-        for j in range(8):
-            # Extract each image from the dataset
-            img = self.images[j]
-            # Calculate the starting index of each image
-            start_i = (j // 3) * 160
-            start_j = (j % 3) * 160
-            # Get the ending index of each image
-            end_i = start_i + 160
-            end_j = start_j + 160
-            # Place the image in the empty array
-            grid[start_i:end_i, start_j:end_j] = img
-            
-        self.grid = grid
-
     def get_ground_truth(self):
         # Parse the xml file
         tree = ET.parse(self.xml_path)
@@ -87,36 +89,84 @@ class Item:
             data = root[0][i][0][0][0][0].attrib
             symbolic = {}
             
-            symbolic['Angle'] = ANGLES[data['Angle']]
-            symbolic['Color'] = COLORS[data['Color']]
-            symbolic['Size'] = SIZES[data['Size']]
             symbolic['Type'] = SHAPES[data['Type']]
+            symbolic['Color'] = COLORS[data['Color']]
+            symbolic['Angle'] = ANGLES[data['Angle']]            
+            symbolic['Size'] = SIZES[data['Size']]
             
+            self.colors.append(NAME_TO_COLOR[symbolic['Color']])
             self.symbolic[i] = symbolic
+                
+    def generate_matrix(self, array_list):
+        # row-major array_list
+        array_list = array_list[0:8, :, :]
+        img_grid = np.zeros((IMAGE_SIZE * 3, IMAGE_SIZE * 3), np.uint8)
+        
+        for idx in range(len(array_list)):
+            i, j = divmod(idx, 3)
+            img_grid[i * IMAGE_SIZE:(i + 1) * IMAGE_SIZE, j * IMAGE_SIZE:(j + 1) * IMAGE_SIZE] = array_list[idx]
+            
+        # draw grid
+        for x in [0.33, 0.67]:
+            img_grid[int(x * IMAGE_SIZE * 3) - 1:int(x * IMAGE_SIZE * 3) + 1, :] = 0
+        for y in [0.33, 0.67]:
+            img_grid[:, int(y * IMAGE_SIZE * 3) - 1:int(y * IMAGE_SIZE * 3) + 1] = 0
+            
+        return img_grid
+
+    def generate_answers(self, array_list):
+        array_list = array_list[8:16, :, :]
+        img_grid = np.zeros((IMAGE_SIZE * 2, IMAGE_SIZE * 4), np.uint8)
+        
+        for idx in range(len(array_list)):
+            i, j = divmod(idx, 4)
+            img_grid[i * IMAGE_SIZE:(i + 1) * IMAGE_SIZE, j * IMAGE_SIZE:(j + 1) * IMAGE_SIZE] = array_list[idx]
+            
+        # draw grid
+        for x in [0.5]:
+            img_grid[int(x * IMAGE_SIZE * 2) - 1:int(x * IMAGE_SIZE * 2) + 1, :] = 0
+        for y in [0.25, 0.5, 0.75]:
+            img_grid[:, int(y * IMAGE_SIZE * 4) - 1:int(y * IMAGE_SIZE * 4) + 1] = 0
+            
+        return img_grid
+
+    def generate_matrix_answer(self, array_list):
+        # row-major array_list
+        assert len(array_list) <= 18
+        img_grid = np.zeros((IMAGE_SIZE * 6, IMAGE_SIZE * 3), np.uint8)
+        
+        for idx in range(len(array_list)):
+            i, j = divmod(idx, 3)
+            img_grid[i * IMAGE_SIZE:(i + 1) * IMAGE_SIZE, j * IMAGE_SIZE:(j + 1) * IMAGE_SIZE] = array_list[idx]
+            
+        # draw grid
+        for x in [0.33, 0.67, 1.00, 1.33, 1.67]:
+            img_grid[int(x * IMAGE_SIZE * 3), :] = 0
+        for y in [0.33, 0.67]:
+            img_grid[:, int(y * IMAGE_SIZE * 3)] = 0
+            
+        return img_grid
+    
+    def merge_matrix_answer(self, array_list):
+        matrix_image = self.generate_matrix(array_list)
+        answer_image = self.generate_answers(array_list)
+        
+        img_grid = np.ones((IMAGE_SIZE * 5 + 20, IMAGE_SIZE * 4), np.uint8) * 255
+        img_grid[:IMAGE_SIZE * 3, int(0.5 * IMAGE_SIZE):int(3.5 * IMAGE_SIZE)] = matrix_image
+        img_grid[-(IMAGE_SIZE * 2):, :] = answer_image
+        
+        return img_grid
+
+    def process(self):
+        array = self.images
+        self.merged = self.merge_matrix_answer(array)
+
+        self.get_ground_truth()
         
     def plot(self):
         name = self.npz_path.split('/')[-1]
         
         plt.title(f"Puzzle: {name}")
-        plt.imshow(self.grid)
+        plt.imshow(self.merged)
         plt.axis('off')
         plt.show()
-
-        fig, axes = plt.subplots(1, 8, figsize=(20, 15))
-        plt.title(f"Answers: {name}")
-        for j in range(8):
-            axes[j].imshow(self.images[-8+j, :, :])
-            axes[j].set_axis_off()
-            
-        plt.axis('off')
-        plt.show()
-
-        self.grid[320:480, 320:480] = self.images[8+self.target_id]
-        plt.title(f'Solution:{name}')
-        plt.imshow(self.grid)
-        plt.axis('off')
-        plt.show()
-    
-    def process(self):
-        self.get_image()
-        self.get_ground_truth()
