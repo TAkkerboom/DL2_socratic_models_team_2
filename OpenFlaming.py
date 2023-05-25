@@ -86,7 +86,14 @@ class Flamingo:
         prediction, targets = self.inference()
         np.savez('Flamingo'+self.fig_type, predictions=np.array(prediction), targets=np.array(targets))
         # print(classification_report(targets, predictionnums, labels=list(range(0, 8))))
-
+    
+    def accuracy(self):
+        predictionnum = [prediction.split("The answer of the RAVEN puzzle logic puzzle is shape")[1]
+                        for prediction in list(self.prediction)]
+        finalprediction = []
+        for pnum in predictionnum:
+            finalprediction.append(int(''.join(filter(str.isdigit, pnum[:4])))-1)
+        print(classification_report(list(self.targets), finalprediction, labels=list(range(0, 8))))
 
 
 if __name__ == '__main__':
@@ -98,3 +105,4 @@ if __name__ == '__main__':
     for fig_type in fig_types:
         FlamingoModel.dataset(fig_type)
         FlamingoModel.forward()
+        FlamingoModel.accuracy()
