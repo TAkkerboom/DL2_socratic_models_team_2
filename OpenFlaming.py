@@ -12,9 +12,8 @@ from sklearn.metrics import classification_report
 
 class Flamingo:
 
-    def __init__(self,device,test_set=None):
+    def __init__(self,device):
         self.device = device
-        self.test_set = test_set
         self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The puzzle looks like <image>.
         Based on this image, what is the third shape on the third row?<|endofchunk|> You can only choose between the following shapes:
         Shape 1: <image><|endofchunk|>, Shape 2: <image><|endofchunk|>, Shape 3: <image><|endofchunk|>, Shape 4: <image><|endofchunk|>,
