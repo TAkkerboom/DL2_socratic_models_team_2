@@ -138,7 +138,7 @@ class Demo:
         return answers
             
     def generate_prompts(self, attributes):
-        return self.prompt.format(*[generate_single_description(attr) for attr in attributes])
+        return self.prompt.format(*[generate_single_description(*attr) for attr in attributes])
 
     def get_descriptions(self, attributes):
         descriptions = []
