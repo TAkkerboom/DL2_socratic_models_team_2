@@ -1,17 +1,15 @@
-from transformers import BlipProcessor, BlipForQuestionAnswering, AutoTokenizer
-from transformers import CLIPProcessor, CLIPModel
+from transformers import BlipProcessor, BlipForQuestionAnswering, AutoTokenizer, CLIPProcessor, CLIPModel
 import torch
 import cv2
-import numpy as np
 import math
 
 
 class VLM:
     def __init__(self, model_name="Salesforce/blip-vqa-base", device="cpu"):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = device
         self.processor = CLIPProcessor.from_pretrained(model_name)
         self.model = CLIPModel.from_pretrained(model_name)
-        self.model.to(self.device)
+        self.model.to(device)
         
     def forward(self, image, prompt):
         inputs = self.processor(image, prompt, return_tensors="pt").to(self.device)
@@ -27,16 +25,16 @@ class CLIP(VLM):
         outputs = self.model(**inputs)
         logits_per_image = outputs.logits_per_image
         probs = logits_per_image.softmax(dim=1)
-        ret = prompt[torch.argmax(probs)]
+        label = prompt[torch.argmax(probs)]
         
-        return ret
+        return label
     
 
 class OpenCV:
     def __init__(self):
         pass
 
-    def detect_color(self,image,contour):
+    def detect_color(self, image, contour):
         colorindexed = image[int(image.shape[0]/2),int(image.shape[0]/2)]
         COLOR_VALUES = [255, 224, 196, 168, 140, 112, 84, 56, 28, 0]
         colorindex = COLOR_VALUES.index(colorindexed)
@@ -93,15 +91,15 @@ class OpenCV:
     
 
 class LM:
-
-    def __init__(self, model, device, model_class):
-        self.model = model_class.from_pretrained(model) # for t5
-        self.tokenizer = AutoTokenizer.from_pretrained(model)
+    def __init__(self, model, model_class, device='cpu'):
         self.device = device
+        self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto", torch_dtype=torch.float16)
+        self.model = model_class.from_pretrained(model) # for t5
         self.model.to(device)
         
     def forward(self, batch):
         # inputs = self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True)
         inputs = {key: value.to(self.device) for key, value in self.tokenizer.batch_encode_plus(batch, return_tensors="pt", padding=True).items()}
-        outputs = self.model.generate(**inputs, max_length=512).to(self.device) # , max_length=512 for t5
+        outputs = self.model.generate(**inputs, max_length=512).to(self.device)  # max_length=512 for t5
+        
         return self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
