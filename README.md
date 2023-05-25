@@ -4,7 +4,7 @@ This Github is made for the course, Deep Learning 2 from the Universiteit van Am
 # Structure
 The structure of the Github repo is as follows:\
 |-- readme.md   # Description of the repo with relevant getting started info (used dependencies/conda envs)\
-|               # and should contain all information necessary to reproduce the project\
+>>>>>>>>>># and should contain all information necessary to reproduce the project\
 |-- blogpost.md # Main deliverable: a blogpost style report\
 |-- center_single subset        A subset of the RPM dataset, which is used by the demo notebooks\
 |-- src         # contains the files used by the main Socratic model file\
