@@ -34,7 +34,7 @@ class Flamingo:
     
     def dataset(self, fig_type):
         self.fig_type = fig_type
-        self.test_set = Raven(self.PATH, self.fig_type)
+        self.test_set = Raven(self.PATH, "", self.fig_type)
         self.test_set.load_data()
         print(str(self.test_set.len()))
 
