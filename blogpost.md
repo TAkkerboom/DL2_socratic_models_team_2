@@ -34,10 +34,19 @@ This research project intends to explore the potential of a Socratic Model (SM) 
 
 The significance of the proposed work is that it will provide insight into the capabilities of a Socratic model to solve logical puzzles, as well as its potential to extend to new applications. It will also provide a comparison between existing models and the proposed one.
 
-The proposed work consists of constructing a pipeline using the Socratic model framework and using an open-source implementation of different VLMs and LMs, such as Flamingo, Clip, Open-Assistant, Codex and FlanT5. Also traditional Computer Vision methods will be tested to extract the shapes of the Raven Progressive Matrices. The exact models are determined by testing the performance of different models. The performance of this pipeline will be assessed using a metric based on the outcomes of the logical puzzles, and the results will be compared to the baselines.
+The proposed work consists of constructing a pipeline using the Socratic model framework and using an open-source implementation of different VLMs and LMs, such as Clip, Open-Assistant, Codex and FlanT5. Also traditional Computer Vision methods will be tested to extract the shapes of the Raven Progressive Matrices. The exact models are determined by testing the performance of different models. The performance of this pipeline will be assessed using a metric based on the outcomes of the logical puzzles, and the results will be compared to the baselines.
 
 The anticipated outcomes from this project include insight into the performance of the Socratic model pipeline and the potential for it to extend to other applications. Additionally, it is expected that this work will provide a comparison between the proposed pipeline and existing models in the field.
 
+## Experiments
+### Experiment 1
+In this experiment different LLMs are tested to predict the answer of the RPM, based on the groundtruth shape, color, size and angle of the images. This experiment is done to assess the capibilities of the Langauge Model to solve the RPM with perfect information.
+
+### Experiment 2
+In this experiment the LLMs are connected to different VLMs to test the performance of the complete Socratic Model pipeline. 
+
+### Experiment 3
+In the final experiment the performance of the Socratic Model is compared to Flamingo.
 
 # Results
 Although we have not gathered all the necessary results, early testing shows promising results on the centre_single (an RPM with only one shape in the centre of the image) seems to provide excellent results with around 80-90% accuracy. Limited testing on the more complicated sets shows that the SM has more difficulty when there isn’t a single shape to focus on. More concrete results, both qualitative and quantitative, will follow once we run the full suite of experiments.
