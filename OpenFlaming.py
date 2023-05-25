@@ -86,6 +86,19 @@ class Flamingo:
         prediction, targets = self.inference()
         np.savez('Flamingo'+self.fig_type, predictions=np.array(prediction), targets=np.array(targets))
         # print(classification_report(targets, predictionnums, labels=list(range(0, 8))))
+       
+    def forward_demo(self,puzzle,puzzlenumber, test_set):
+        puzzleanswers = puzzle[8:]
+        completepuzzle = Image.fromarray(test_set.items[puzzlenumber].grid).convert("P")
+        puzzleanswers = [completepuzzle]+puzzleanswers
+        self.Preprocess(puzzleanswers)
+        self.TokenizerFlamingo()
+        self.InferenceFlamingo()
+        prediction =self.tokenizer.decode(self.generated_text[0])
+        Predictionstring = prediction.split("The answer of the RAVEN puzzle logic puzzle is shape")[1][:4]
+        Answernumber = int(''.join(filter(str.isdigit,Predictionstring)))-1
+        Print(f"The answer is {str(Answernumber)}")
+        return answernumber
     
     def accuracy(self):
         predictionnum = [prediction.split("The answer of the RAVEN puzzle logic puzzle is shape")[1]
