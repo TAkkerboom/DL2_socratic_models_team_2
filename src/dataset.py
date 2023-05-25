@@ -65,7 +65,7 @@ class Raven:
             
             self.items.append(item)
             print(f"Loading item: {i}")
-            break
+
             
 class Item:
     def __init__(self, npz_path, xml_path, id):
