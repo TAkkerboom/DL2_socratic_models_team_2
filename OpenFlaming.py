@@ -21,8 +21,8 @@ class Flamingo:
         self.flamingomodel, self.image_processor, self.tokenizer = create_model_and_transforms(
                                                             clip_vision_encoder_path="ViT-L-14",
                                                             clip_vision_encoder_pretrained="openai",
-                                                            lang_encoder_path="/home/lcur1621/DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
-                                                            tokenizer_path="/home/lcur1621/DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
+                                                            lang_encoder_path="/DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
+                                                            tokenizer_path="//DL2_socratic_models_team_2/LLamaHugginface/hugginfacellama",
                                                             cross_attn_every_n_layers=4,
                                                             inference=True,
                                                             precision = 'fp16',
