@@ -1,14 +1,16 @@
 from transformers import BlipProcessor, BlipForQuestionAnswering, AutoTokenizer
+from transformers import CLIPProcessor, CLIPModel
 import torch
 import cv2
 import numpy as np
 import math
 
+
 class VLM:
     def __init__(self, model_name="Salesforce/blip-vqa-base", device="cpu"):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.processor = BlipProcessor.from_pretrained(model_name)
-        self.model = BlipForQuestionAnswering.from_pretrained(model_name)
+        self.processor = CLIPProcessor.from_pretrained(model_name)
+        self.model = CLIPModel.from_pretrained(model_name)
         self.model.to(self.device)
         
     def forward(self, image, prompt):
@@ -17,7 +19,19 @@ class VLM:
         out = self.processor.decode(out[0], skip_special_tokens=True)
         
         return out
+
+
+class CLIP(VLM):
+    def forward(self, image, prompt):
+        inputs = self.processor(text=prompt, images=image, return_tensors="pt", padding=True).to(self.device)
+        outputs = self.model(**inputs)
+        logits_per_image = outputs.logits_per_image
+        probs = logits_per_image.softmax(dim=1)
+        ret = prompt[torch.argmax(probs)]
+        
+        return ret
     
+
 class OpenCV:
     def __init__(self):
         pass

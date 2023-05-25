@@ -1,5 +1,5 @@
-from DL2_socratic_models_team_2.src.dataset import Raven
-from DL2_socratic_models_team_2.src.model import VLM, LM, OpenCV, CLIP
+from src.dataset import Raven
+from src.model import VLM, LM, OpenCV, CLIP
 from PIL import Image
 import numpy as np
 import requests
@@ -101,19 +101,17 @@ class SM:
 
 class Demo:
 
-    def __init__(self):
-        self.PATH = "/home/lcur1645/RAVEN-10000"
-        fig_types = ['center_single']
-
-        self.test_set = Raven(self.PATH, 'test', fig_types[0])
-        self.test_set.load_data()
-
-        print('loading vlm...')
-        self.CLIP = CLIP(model_name="openai/clip-vit-base-patch32", model_class=CLIPModel, proc_class=CLIPProcessor)
-        print('loading lm...')
-        self.LM = LM("google/flan-t5-xl", 'cuda', AutoModelForSeq2SeqLM)
+    def __init__(self, test_set, prompt=None):
+        self.test_set = test_set
         self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}'''
 
+    def load_VLM(self):
+        print('loading vlm...')
+        self.CLIP = CLIP(model_name="openai/clip-vit-base-patch32")
+        
+    def load_LM(self):
+        print('loading lm...')
+        self.LM = LM("google/flan-t5-xl", 'cuda', AutoModelForSeq2SeqLM)
 
     def VLM_pred_attributes(self, puzzle):
         puzzle_answers = []
