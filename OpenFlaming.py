@@ -77,7 +77,7 @@ class Flamingo:
 
             prediction =self.tokenizer.decode(self.generated_text[0])
             print(f"The prediction is:{prediction}")
-            targets.append(self.test_set.get_answers(i))
+            targets.append(self.test_set.items[i].target_id)
             predictions.append(prediction)
          
         return predictions, targets
