@@ -160,7 +160,8 @@ class Item:
     def process(self):
         array = self.images
         self.merged = self.merge_matrix_answer(array)
-
+        self.puzzle_image = self.generate_matrix(array[:8])
+        
         self.get_ground_truth()
         
     def plot(self):
