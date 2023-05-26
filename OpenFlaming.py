@@ -68,7 +68,7 @@ class Flamingo:
         for i in range(self.test_set.len()):
             print(f"Loading puzzle:{i}")
             puzzleanswers = self.test_set.get_puzzle(i)[8:]
-            completepuzzle = Image.fromarray(self.test_set.items[i].grid).convert("P")
+            completepuzzle = Image.fromarray(self.test_set.items[i].puzzle_image).convert("P")
             puzzleanswers = [completepuzzle]+puzzleanswers
             self.Preprocess(puzzleanswers)
             self.TokenizerFlamingo()
