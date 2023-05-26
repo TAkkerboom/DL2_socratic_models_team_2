@@ -62,9 +62,26 @@ In the final experiment the performance of the Socratic Model is compared to [Fl
 Although we have not gathered all the necessary results, early testing shows promising results on the centre_single (an RPM with only one shape in the centre of the image) seems to provide excellent results with around 80-90% accuracy. Limited testing on the more complicated sets shows that the SM has more difficulty when there isn’t a single shape to focus on. More concrete results, both qualitative and quantitative, will follow once we run the full suite of experiments.
 
 ### Experiment 3
-| **Our method**|                        |                           |          |
-|---------------|------------------------|---------------------------|----------|
+| precision    | recall | f1-score | support |       |
+|--------------|--------|----------|---------|-------|
+| 0            | 0.00   | 0.00     | 0.00    | 1251  |
+| 1            | 0.00   | 0.00     | 0.00    | 1233  |
+| 2            | 0.14   | 0.02     | 0.04    | 1268  |
+| 3            | 0.00   | 0.00     | 0.00    | 1189  |
+| 4            | 0.00   | 0.00     | 0.00    | 1256  |
+| 5            | 0.00   | 0.00     | 0.00    | 1308  |
+| 6            | 0.12   | 0.30     | 0.17    | 1204  |
+| 7            | 0.13   | 0.67     | 0.21    | 1291  |
+| accuracy     |        |          | 0.13    | 10000 |
+| macro avg    | 0.05   | 0.12     | 0.05    | 10000 |
+| weighted avg | 0.05   | 0.13     | 0.05    | 10000 |
+
+In the third experiment, we run OpenFlamingo on the Center_single set. What immediately becomes clear is that OpenFlamingo, within the multiple choices, only gives the shape number 2,6 and 7 also solution. Shapes 0,1,3,4 and 5 are never given as solution. With this notion could be concluded that, without retraining, OpenFlamingo could not solve the Raven dataset. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture. 
+
+
+
 | Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
+|---------------|------------------------|---------------------------|----------|
 | CLIP + Flant5 |                        |                           |          |
 | OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
 
