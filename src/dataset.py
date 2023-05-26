@@ -78,6 +78,7 @@ class Item:
         self.target_id = npz_data['target']
         self.symbolic = {}
         self.colors = []
+        self.puzzle_image = None
         
     def get_ground_truth(self):
         # Parse the xml file
