@@ -4,19 +4,27 @@ This Github is made for the course, Deep Learning 2 from the Universiteit van Am
 # Structure
 ```
 .
-|-- readme.md   # Description of the repo with relevant getting started info (used dependencies/conda envs)
 |
+|-- center_single subset  # A subset of the RAVEN dataset for demos
 |
-|-- blogpost.md # Blogpost style report
+|-- demos                 # Interactive notebooks showcasing the models
+|   |-- Experiment1and2.ipynb
+|   |-- experiment_3.ipynb
 |
-|-- src         # Contains the main project files
+|-- output                # Output of the experiments
+|   |-- experiment1
+|   |-- experiment2
+|
+|-- src                   # Source code of the pipeline
 |   |-- const.py     
 |   |-- dataset.py
 |   |-- model.py
 |
-|-- demos       # Contains experiments and showcases the models
-|   |-- Experiment1and2.ipynb
-|   |-- experiment_3.ipynb
+|-- README.md   # Description of the repo with relevant getting started info (used dependencies/conda envs)
 |
-|-- center_single subset # A subset of the RPM dataset, which is used by the demo notebooks
+|-- blogpost.md # Blogpost style report
+|
+|-- lisa.job    # Job file for LISA cluster
+|
+|-- main.py     # Script to run the whole pipeline
 ```
