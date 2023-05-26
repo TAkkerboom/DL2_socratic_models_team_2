@@ -15,8 +15,8 @@ This Github is made for the course, Deep Learning 2 from the Universiteit van Am
 |   |-- model.py
 |
 |-- demos       # Contains experiments and showcases the models
-|   |-- test_1.ipynb
-|   |-- experiment_2.ipynb
+|   |-- Experiment1and2.ipynb
+|   |-- experiment_3.ipynb
 |
 |-- center_single subset # A subset of the RPM dataset, which is used by the demo notebooks
 ```
