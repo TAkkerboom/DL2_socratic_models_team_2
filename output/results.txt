@@ -1,0 +1,1 @@
+['a cyan square of size 0.4 at a 0 degrees angle, a cyan square of size 0.4 at a 0 degrees angle, a cyan square of size 0.4 at a 0 degrees angle, a cyan square of size 0.4 at a 0 degrees angle, a brown square of size 0.4 at a 0 degrees angle, a pink square of size 0.4 at a 0 degrees angle']

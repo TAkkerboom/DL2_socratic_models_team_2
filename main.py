@@ -2,6 +2,16 @@ from src.dataset import Raven
 from src.model import VLM, LM, OpenCV, CLIP
 from src.const import SHAPES, ANGLES, SIZES, COLORS
 from transformers import AutoModelForSeq2SeqLM
+from os.path import exists
+from tqdm import tqdm
+import numpy as np
+import argparse
+import torch
+import gdown
+import zipfile
+
+
+URL = "https://drive.google.com/file/d/111swnEzAY2NfZgeyAhVwQujMjRUfeyuY/view?usp=sharing"
 
 
 class SM:
@@ -101,10 +111,14 @@ class Demo:
         self.template_angle = ['The figure is rotated by {} degrees'.format(value) for value in ANGLES.values()]
         self.template_sizes = ['The percentage of the image covered by the figure is {}'.format(value) for value in SIZES.values()]
         
+        print('VLM is ready to use')
+        
     def load_LM(self, model, model_class=AutoModelForSeq2SeqLM):
         print(f'loading {model}...')
         self.LM = LM(model, model_class, self.device)
 
+        print('LM is ready to use')
+        
     def get_attributes(self, puzzle):
         answers = []
                 
@@ -117,6 +131,9 @@ class Demo:
             answers.append([angle, color, size, type])
             
         return answers
+
+    def generate_prompts(self, attributes):
+        return self.prompt.format(*[generate_single_description(*attr) for attr in attributes])
     
     def OpenCV_pred_attributes(self):
         answers = []
@@ -133,9 +150,6 @@ class Demo:
             
         return answers
             
-    def generate_prompts(self, attributes):
-        return self.prompt.format(*[generate_single_description(*attr) for attr in attributes])
-
     def get_descriptions(self, attributes):
         descriptions = []
         for puzzle in attributes:
@@ -146,7 +160,7 @@ class Demo:
             descriptions.append(shape_desc)
         return descriptions
 
-    def inference(self, prompt):
+    def solve(self, prompt):
         pred = self.LM.forward(prompt)
         
         return pred
@@ -154,24 +168,83 @@ class Demo:
     def forward(self, puzzle):
         attributes = self.get_attributes(puzzle)
         prompt = self.generate_prompts(attributes)
-        pred = self.inference([prompt])
+        pred = self.solve([prompt])
+        
         return pred
 
 def generate_single_description(angle, color, size, type):
     template = 'a {} {} of size {} at a {} degrees angle'.format(color, type, size, angle)
+    
     return template
+
+def set_seed(seed):
+    """
+    Function for setting the seed for reproducibility.
+    """
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     
-def main():
-    SM = Demo()
-    file = open("predictions.txt", "a")  # append mode
+def main(seed, data_dir, split, type, vlm, lm):
+    """
+    Main function for testing the model.
+    """
+    # Choose seed for reproducibility
+    set_seed(seed)
+    # Pick GPU if available
+    device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     
-    for i in range(7000):
-        puzzle = SM.test_set.get_puzzle(i)
-        pred = SM.forward(puzzle)
-        print(pred)
-        file.write("{}\n".format(pred))
+    # Download the RAVEN dataset
+    output = f"{data_dir}RAVEN10000.zip"
+    if not exists(output):
+        gdown.download(URL, output, quiet=False, fuzzy=True)
+        # Unzip the archive
+        with zipfile.ZipFile(output, "r") as zip_ref:
+            print('unpacking...')
+            zip_ref.extractall(data_dir)
+            print('unpacking done')
+    else:
+        print('Dataset already exists, moving further...')
+        
+    # Load the data
+    test_set = Raven(f'{data_dir}RAVEN-10000/', split, type)
+    test_set.load_data()
+    
+    # Prepare the Socratic Model
+    model = Demo(device)
+    model.load_VLM(vlm)
+    model.load_LM(lm)
+    
+    # Append mode
+    with open('./output/results.txt', 'w') as file:
+        # Inference
+        for i in tqdm(range(test_set.len())):
+            puzzle = test_set.get_puzzle(i)
+            output = model.forward(puzzle)
+            file.write(f"{output}\n")
         
     file.close()
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('--seed', default=42, type=int,
+                        help='Seed to use for reproducing results')
+    parser.add_argument('--data_dir', default='data/', type=str,
+                        help='Data directory where to find dataset.')
+    parser.add_argument('--split', default='test', type=str,
+                        help='Data split to use.')
+    parser.add_argument('--type', default='center_single', type=str,
+                        help='Puzzle type to use.')
+    parser.add_argument('--vlm', default='openai/clip-vit-base-patch32', type=str,
+                        help='VLM weights to use.')
+    parser.add_argument('--lm', default='google/flan-t5-small', type=str,
+                        help='LM weights to use.')
+    
+    args = parser.parse_args()
+    kwargs = vars(args)
+    main(**kwargs)

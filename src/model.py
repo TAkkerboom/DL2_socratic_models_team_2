@@ -95,7 +95,7 @@ class OpenCV:
 class LM:
     def __init__(self, model, model_class, device='cpu'):
         self.device = device
-        self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto", torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained(model, device_map="auto")
         self.model = model_class.from_pretrained(model) # for t5
         self.model.to(device)
         
