@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 from torchvision import transforms
-from src.const import SHAPES, ANGLES, SIZES, COLORS, NAME_TO_COLOR
+from .const import SHAPES, ANGLES, SIZES, COLORS, NAME_TO_COLOR
 import cv2
 
 IMAGE_SIZE = 160
