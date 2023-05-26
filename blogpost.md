@@ -39,6 +39,14 @@ The proposed work consists of constructing a pipeline using the Socratic model f
 The anticipated outcomes from this project include insight into the performance of the Socratic model pipeline and the potential for it to extend to other applications. Additionally, it is expected that this work will provide a comparison between the proposed pipeline and existing models in the field.
 
 ## Experiments
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/a2f98ac5-a13c-4349-be16-dda4ee6bc6b4)
+
+With our experiment we test the Socratic Model on the Center Single Raven Progressive Matrices. These include simple shapes such as triangles, squares, circles, hexagon and pentagons. The final shape is unknown and should be predicted based on the pattern of the other shapes. An example:
+
+
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/824a5d77-09a1-4e4c-8ebc-12afa098c2ca)
+
+
 ### Experiment 1
 In this experiment different LLMs are tested to predict the answer of the RPM, based on the groundtruth shape, color, size and angle of the images. This experiment is done to assess the capibilities of the Langauge Model to solve the RPM with perfect information.
 
@@ -48,17 +56,33 @@ In this experiment the LLMs are connected to different VLMs to test the performa
 ### Experiment 3
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/ad25e324-e62c-4573-9cd8-70008552dc9a)
 
-In the final experiment the performance of the Socratic Model is compared to Flamingo. Flamingo is a Multi Modal Visual Language Model for few shot learning. This means that it can understand the 
+In the final experiment the performance of the Socratic Model is compared to [Flamingo](https://arxiv.org/pdf/2204.14198.pdf). Flamingo is a Multi Modal Visual Language Model for few shot learning. It uses gates to constrain the Language Model with the encoded Vision input. In our case this is the puzzle, and the different shapes of the answer. This model is trained for Visual Question Answering (VQA) and Few shot learning. Because Flamingo is not opensource, we use the [OpenFlamingo version](https://github.com/mlfoundations/open_flamingo) with LLama as Large Language Model. To compare it to other methods, we also compare it to the methods proposed by the original authors of the [Raven Dataset](https://wellyzhang.github.io/attach/cvpr19zhang.pdf). This is a method with a ResNET backbone and Dynamic Residual Tree. This method is not retested with our research. They also compare it to other Deep Learning methods, which will be shown in the conclusion paragraph.
 
 # Results
 Although we have not gathered all the necessary results, early testing shows promising results on the centre_single (an RPM with only one shape in the centre of the image) seems to provide excellent results with around 80-90% accuracy. Limited testing on the more complicated sets shows that the SM has more difficulty when there isn’t a single shape to focus on. More concrete results, both qualitative and quantitative, will follow once we run the full suite of experiments.
 
 ### Experiment 3
-
+| **Our method**|                        |                           |          |
+|---------------|------------------------|---------------------------|----------|
 | Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
-| ------------- | -----------------------|---------------------------|----------|
 | CLIP + Flant5 |                        |                           |          |
 | OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
 
+
 # Conclusion
-TBD
+| **Our method**|                        |                           |          |
+|---------------|------------------------|---------------------------|----------|
+| Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
+| CLIP + Flant5 |                        |                           |          |
+| OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
+| **Other method**                       |                           |          |
+| LSTM          |                        |                           | 0.13     |
+| WReN          |                        |                           | 0.13     |
+| CNN           |                        |                           | 0.34     |
+| ResNET        |                        |                           | 0.52     |
+| LSTM+DRT      |                        |                           | 0.14     |
+| WReN +DRT     |                        |                           | 0.15     |
+| CNN +DRT      |                        |                           | 0.37     |
+| ResNET +DRT   |                        |                           | 0.58     |
+| Human         |                        |                           | 0.95     |
+| Solver        |                        |                           | 1.00     |
