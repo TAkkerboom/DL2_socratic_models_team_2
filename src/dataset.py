@@ -57,13 +57,13 @@ class Raven:
         return item.symbolic
     
     def load_data(self):
+        print('Loading data...')
         for i, (npz, xml) in enumerate(zip(self.npz_data, self.xml_data)):
             item = Item(npz, xml, i)
-            item.process()
-            
+            item.process()            
             self.items.append(item)
-            print(f"Loading item: {i}")
 
+        print(f'{len(self.items)} items were successfully loaded')
             
 class Item:
     def __init__(self, npz_path, xml_path, id):
