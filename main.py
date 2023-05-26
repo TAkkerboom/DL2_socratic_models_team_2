@@ -3,10 +3,6 @@ from src.model import VLM, LM, OpenCV, CLIP
 from src.const import SHAPES, ANGLES, SIZES, COLORS
 from transformers import AutoModelForSeq2SeqLM
 
-def generate_single_description(angle, color, size, type):
-    template = 'a {} {} of size {} at a {} degrees angle'.format(color, type, size, angle)
-    return template
-
 
 class SM:
     def __init__(self):
@@ -160,7 +156,10 @@ class Demo:
         prompt = self.generate_prompts(attributes)
         pred = self.inference([prompt])
         return pred
-    
+
+def generate_single_description(angle, color, size, type):
+    template = 'a {} {} of size {} at a {} degrees angle'.format(color, type, size, angle)
+    return template
     
 def main():
     SM = Demo()
