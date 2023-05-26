@@ -46,7 +46,9 @@ In this experiment different LLMs are tested to predict the answer of the RPM, b
 In this experiment the LLMs are connected to different VLMs to test the performance of the complete Socratic Model pipeline. 
 
 ### Experiment 3
-In the final experiment the performance of the Socratic Model is compared to Flamingo.
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/ad25e324-e62c-4573-9cd8-70008552dc9a)
+
+In the final experiment the performance of the Socratic Model is compared to Flamingo. Flamingo is a Multi Modal Visual Language Model for few shot learning. This means that it can understand the 
 
 # Results
 Although we have not gathered all the necessary results, early testing shows promising results on the centre_single (an RPM with only one shape in the centre of the image) seems to provide excellent results with around 80-90% accuracy. Limited testing on the more complicated sets shows that the SM has more difficulty when there isn’t a single shape to focus on. More concrete results, both qualitative and quantitative, will follow once we run the full suite of experiments.
