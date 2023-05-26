@@ -18,15 +18,6 @@ ANGLES = {
     "7": '180'
 }
 
-# SIZES = {
-#     "0": 'tiny',
-#     "1": 'small',
-#     "2": 'medium',
-#     "3": 'large',
-#     "4": 'extra large',
-#     "5": 'huge'
-# }
-
 SIZES = {
     "0": 0.4,
     "1": 0.5,
@@ -51,13 +42,13 @@ NAME_TO_COLOR = {
 
 COLORS = {
     "0": 'red', 
-    "1": 'green', # green
-    "2": 'blue', # blue
-    "3": 'yellow', # yellow
-    "4": 'cyan', # cyan
-    "5": 'brown', # magenta
-    "6": 'orange', # orange
-    "7": 'purple', # purple
-    "8": 'pink', # pink
-    "9": 'teal' # teal
+    "1": 'green', 
+    "2": 'blue',
+    "3": 'yellow',
+    "4": 'cyan', 
+    "5": 'brown', 
+    "6": 'orange',
+    "7": 'purple', 
+    "8": 'pink', 
+    "9": 'teal'
 }
