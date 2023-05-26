@@ -219,7 +219,6 @@ def main(seed, data_dir, split, type, vlm, lm):
     model.load_VLM(vlm)
     model.load_LM(lm)
     
-    # Append mode
     with open('./output/results.txt', 'w') as file:
         # Inference
         for i in tqdm(range(test_set.len())):
