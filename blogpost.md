@@ -53,10 +53,10 @@ Although we have not gathered all the necessary results, early testing shows pro
 
 ### Experiment 3
 
-| Model         | Average F1 score |
-| ------------- | ------------- |
-| CLIP + Flant5 |               |
-| OpenFlamingo  | 0.05          |
+| Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
+| ------------- | -----------------------|---------------------------|----------|
+| CLIP + Flant5 |                        |                           |          |
+| OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
 
 # Conclusion
 TBD
