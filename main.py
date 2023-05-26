@@ -189,7 +189,7 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     
-def main(seed, data_dir, split, type, vlm, lm):
+def main(name, seed, data_dir, split, type, vlm, lm):
     """
     Main function for testing the model.
     """
@@ -219,7 +219,7 @@ def main(seed, data_dir, split, type, vlm, lm):
     model.load_VLM(vlm)
     model.load_LM(lm)
     
-    with open('./output/results.txt', 'w') as file:
+    with open(f'./output/{name}_results.txt', 'w') as file:
         # Inference
         for i in tqdm(range(test_set.len())):
             puzzle = test_set.get_puzzle(i)
@@ -231,6 +231,8 @@ def main(seed, data_dir, split, type, vlm, lm):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--name', default='experiment1', type=str,
+                        help='How to name the results')
     parser.add_argument('--seed', default=42, type=int,
                         help='Seed to use for reproducing results')
     parser.add_argument('--data_dir', default='data/', type=str,
