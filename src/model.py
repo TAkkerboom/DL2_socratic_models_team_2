@@ -82,8 +82,8 @@ class OpenCV:
             shape = "hexagon"
         else:
             shape = "circle"
-        color = self.detect_color(gray)
-        size = self.detect_size(gray,contour)
+        color = self.detect_color(image)
+        size = self.detect_size(image,contour)
         angle = 0
         shapes =[angle, color,size, shape]
 
