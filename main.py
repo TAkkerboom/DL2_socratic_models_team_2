@@ -138,20 +138,14 @@ class Demo:
         
         return desc, prompt
     
-    def OpenCV_pred_attributes(self):
+    def OpenCV_pred_attributes(self, puzzle):
         answers = []
         opencvmodel = OpenCV()
         
-        for i in range(self.test_set.len()):
-            puzzle = self.test_set.get_puzzle(i)
-            puzzle_answers = []
+        for c_image in puzzle:
+            answers.append(opencvmodel.detect_shape(c_image))
             
-            for c_image in puzzle:
-                puzzle_answers.append(opencvmodel.detect_shape(c_image))
-                
-            answers.append(puzzle_answers)
-            
-        return answers
+        return answerss
             
     def get_descriptions(self, attributes):
         descriptions = []
@@ -168,8 +162,11 @@ class Demo:
         
         return pred
 
-    def forward(self, puzzle):
-        attributes = self.get_attributes(puzzle)
+    def forward(self, puzzle, ClassicOpenCV):
+        if ClassicOpenCV:
+            attributes = self.OpenCV_pred_attributes(puzzle)
+        else:
+            attributes = self.get_attributes(puzzle)
         desc, prompt = self.generate_prompts(attributes)
         pred = self.solve([prompt])[0]
         
@@ -204,7 +201,7 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     
-def main(name, seed, data_dir, split, type, vlm, lm):
+def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     """
     Main function for testing the model.
     """
@@ -237,7 +234,10 @@ def main(name, seed, data_dir, split, type, vlm, lm):
     with open(f'./output/{name}_results.txt', 'w') as file:
         # Inference
         for i in tqdm(range(test_set.len())):
-            puzzle = test_set.get_puzzle(i)
+            if not ClassicOpenCV:
+                puzzle = test_set.get_puzzle(i)
+            else:
+                puzzle = test_set.items[i].images[0:16, :, :]
             index, output = model.forward(puzzle)
             file.write(f"{index, output}\n")
         
@@ -256,6 +256,8 @@ if __name__ == '__main__':
                         help='Data split to use.')
     parser.add_argument('--type', default='center_single', type=str,
                         help='Puzzle type to use.')
+    parser.add_argument('--ClassicOpenCV', default=False, type=bool,
+                        help='Use OpenCV or not')
     parser.add_argument('--vlm', default='openai/clip-vit-base-patch32', type=str,
                         help='VLM weights to use.')
     parser.add_argument('--lm', default='google/flan-t5-small', type=str,
