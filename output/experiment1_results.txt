@@ -1,0 +1,1 @@
+(0, 'a cyan square of size 0.4 at a 0 degrees angle')

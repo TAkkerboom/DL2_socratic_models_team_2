@@ -133,7 +133,10 @@ class Demo:
         return answers
 
     def generate_prompts(self, attributes):
-        return self.prompt.format(*[generate_single_description(*attr) for attr in attributes])
+        desc = [generate_single_description(*attr) for attr in attributes]
+        prompt = self.prompt.format(*desc)
+        
+        return desc, prompt
     
     def OpenCV_pred_attributes(self):
         answers = []
@@ -167,10 +170,22 @@ class Demo:
 
     def forward(self, puzzle):
         attributes = self.get_attributes(puzzle)
-        prompt = self.generate_prompts(attributes)
-        pred = self.solve([prompt])
+        desc, prompt = self.generate_prompts(attributes)
+        pred = self.solve([prompt])[0]
         
-        return pred
+        try:
+            output = pred.split(',')[0]
+        except:
+            output = pred
+
+        answers = desc[8:16]
+        
+        if output in answers:
+            index = answers.index(output)
+        else:
+            index = 8
+            
+        return index, output
 
 def generate_single_description(angle, color, size, type):
     template = 'a {} {} of size {} at a {} degrees angle'.format(color, type, size, angle)
@@ -223,8 +238,8 @@ def main(name, seed, data_dir, split, type, vlm, lm):
         # Inference
         for i in tqdm(range(test_set.len())):
             puzzle = test_set.get_puzzle(i)
-            output = model.forward(puzzle)
-            file.write(f"{output}\n")
+            index, output = model.forward(puzzle)
+            file.write(f"{index, output}\n")
         
     file.close()
 
