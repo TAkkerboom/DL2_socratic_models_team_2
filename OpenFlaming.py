@@ -13,7 +13,7 @@ from sklearn.metrics import classification_report
 class Flamingo:
 
     def __init__(self,device):
-        self.PATH = "/home/lcur1621/DL2_socratic_models_team_2/RAVEN-10000"
+        self.PATH = "RAVEN-10000"
         self.device = device
         self.prompt = '''You are given a logic puzzle from the RAVEN dataset. The puzzle looks like <image>.
         Based on this image, what is the third shape on the third row?<|endofchunk|> You can only choose between the following shapes:
@@ -34,7 +34,7 @@ class Flamingo:
     
     def dataset(self, fig_type):
         self.fig_type = fig_type
-        self.test_set = Raven(self.PATH, self.fig_type)
+        self.test_set = Raven(self.PATH, '',self.fig_type)
         self.test_set.load_data()
         print(str(self.test_set.len()))
 
@@ -83,11 +83,17 @@ class Flamingo:
         return predictions, targets
 
     def forward(self):
-        prediction, targets = self.inference()
-        np.savez('Flamingo'+self.fig_type, predictions=np.array(prediction), targets=np.array(targets))
+        self.prediction, self.targets = self.inference()
+        np.savez('Flamingo'+self.fig_type, predictions=np.array(self.prediction), targets=np.array(self.targets))
         # print(classification_report(targets, predictionnums, labels=list(range(0, 8))))
 
-
+    def accuracy(self):
+        predictionnum = [prediction.split("The answer of the RAVEN puzzle logic puzzle is shape")[1]
+                        for prediction in list(self.prediction)]
+        finalprediction = []
+        for pnum in predictionnum:
+            finalprediction.append(int(''.join(filter(str.isdigit, pnum[:4])))-1)
+        print(classification_report(list(self.targets), finalprediction, labels=list(range(0, 8))))
 
 if __name__ == '__main__':
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -98,3 +104,4 @@ if __name__ == '__main__':
     for fig_type in fig_types:
         FlamingoModel.dataset(fig_type)
         FlamingoModel.forward()
+        FlamingoModel.accuray()
