@@ -145,7 +145,7 @@ class Demo:
         for c_image in puzzle:
             answers.append(opencvmodel.detect_shape(c_image))
             
-        return answerss
+        return answers
             
     def get_descriptions(self, attributes):
         descriptions = []
