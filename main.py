@@ -238,7 +238,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
                 puzzle = test_set.get_puzzle(i)
             else:
                 puzzle = test_set.items[i].images[0:16, :, :]
-            index, output = model.forward(puzzle)
+            index, output = model.forward(puzzle,ClassicOpenCV)
             file.write(f"{index, output}\n")
         
     file.close()
