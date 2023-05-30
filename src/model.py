@@ -2,6 +2,8 @@ from transformers import BlipProcessor, BlipForQuestionAnswering, AutoTokenizer,
 import torch
 import cv2
 import math
+import numpy as np
+from .const import COLORS
 
 
 class VLM:
@@ -36,13 +38,11 @@ class OpenCV:
     def __init__(self):
         pass
 
-    def detect_color(self, image, contour):
-        colorindexed = image[int(image.shape[0]/2),int(image.shape[0]/2)]
+    def detect_color(self, image):
         COLOR_VALUES = [255, 224, 196, 168, 140, 112, 84, 56, 28, 0]
-        colorindex = COLOR_VALUES.index(colorindexed)
-        color_values = ['light yellow', 'yellow', 'light green', 'green', 'jade' ,'greenish blue', 'dark blue', 'blue', 'purple', 'dark purple']
-        color = color_values[colorindex]
-        return color
+        colorindexed = image[int(image.shape[0]/2),int(image.shape[1]/2)]
+        colorvalue = COLORS[str(COLOR_VALUES.index(colorindexed))]
+        return colorvalue
     
     def detect_size(self,image,contour):
         area = cv2.contourArea(contour)
@@ -54,7 +54,7 @@ class OpenCV:
             size = 0.4
         else:
             size = math.ceil(size*10)/10
-        return size    
+        return str(size)
     
     def detect_shape(self, image):
         # converting image into grayscale image
@@ -82,9 +82,10 @@ class OpenCV:
             shape = "hexagon"
         else:
             shape = "circle"
-        color = self.detect_color(image,contour)
-        size = self.detect_size(image,contour)
-        shapes =[color,shape,size]
+        color = self.detect_color(gray)
+        size = self.detect_size(gray,contour)
+        angle = 0
+        shapes =[angle, color,size, shape]
 
         return shapes
 
