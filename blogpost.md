@@ -95,7 +95,7 @@ We used BLIP Visual Question Answering model trained with ViT base backbone in o
 
 Figure 4. The OpenCV method explained.
 
-The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle.
+The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle. The angle is set to an arbitrary value, in our case to 0. 
 
 The results of all three architechtures are available in Table 2.
 
