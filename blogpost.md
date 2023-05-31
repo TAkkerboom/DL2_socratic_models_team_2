@@ -57,9 +57,14 @@ Table 2. Experiment 1
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
 
 ### Experiment 2 The Socratic Model
-With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection. Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
-
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
+
+With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. 
+
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db) <br> Figure 4. The OpenCV method explained.
+
+The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection. Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
+
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
 
@@ -75,7 +80,7 @@ With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Comput
 Table 2. Results for different SM configurations.
 
 ### Experiment 3 OpenFlamingo
-![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc)<br> Figure 4. Schematic representation of OpenFlamingo [[3]](#flam). 
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc)<br> Figure 5. Schematic representation of OpenFlamingo [[3]](#flam). 
 
 We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses LLama as LM with 7B parameters and CLIP as a vision encoder. Because the vision encoder is equal to the vision encoder we use in the Socratic Model in Experiment 2, and the amount of parameters is higher for the LLM, the performance should in theory be better than the Socratic Model. The opposite is true.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 7B parameter Language Model, which is more parameters than FlanT5-XL, OpenFlamingo is not trained to handle logical puzzles accurately, with both a vision and a cognition aspect. OpenFlamingo is trained mostly on captioning and VQA, not on logical reasoning. This could be seen by the fact that, within the multiple choices, OpenFlamingo only gives the shape number 3,7 and 8 as solution. Shapes 1,2,4,5 and 6 are never given as solution. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture, thereby preventing error accumulation.
 
