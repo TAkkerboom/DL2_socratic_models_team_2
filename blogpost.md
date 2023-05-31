@@ -45,7 +45,7 @@ For all experiments, the pipeline is tested on the Center Single subset of the R
 Figure 2. RPM Examples. The top 8 figures with the missing shape form a logical puzzles, where the missing shape should be filled with one of the 8 answers below. Only one answer can be correct at a time.
 
 ### Baselines
-The baseline we use to compare our Socratic Model to, is from the paper [[2]](#raven) of the Socratic Model. They used a Dynamically Residual Tree, to solve the Raven Dataset. The Dynamically Residual Tree is a Tree traversal algorithm, which solves the puzzle by going through the nodes. To get the Visual Encoding of the shapes, they used ResNET. They also compared it to human performance and a solver.
+The baseline we use to compare our pipeline is from the paper that originated the RPM dataset [[2]](#raven). In the paper, they used a Dynamically Residual Tree to solve the puzzles. The Dynamically Residual Tree is a tree traversal algorithm which solves the puzzle by going through the nodes. To get the visual encoding of the shapes, they used ResNET. After training, their algorithm was compared to human performance and a logical solver algorithm.
 
 Table 1. Baseline for comparison
 
