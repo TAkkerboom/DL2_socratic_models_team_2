@@ -98,7 +98,7 @@ Table 2. Socratic Model Test Results:
 
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|----|
-| CLIP + FT5-L (TODO/770M)    | TODO      | TODO   | TODO | TODO |
+| CLIP + FT5-L (TODO/770M)    | 0.136      | 0.136   | 0.120 | 0.136 |
 | CLIP + FT5-XL (TODO/3B)     | 0.127     | 0.118   | 0.097 | 0.118 |
 | BLIP + FT5-L (TODO/770M)     | 0.136      | 0.127   | 0.107 | 0.127 |
 | BLIP + FT5-XL (TODO/3B)     | TODO      | TODO   | TODO | TODO |

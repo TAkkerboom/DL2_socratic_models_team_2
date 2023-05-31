@@ -225,10 +225,12 @@ def evaluate_model(output_dir, name, groundtruths, preds):
     y_pred = [y[0] for y in preds]
 
     cr = classification_report(y_true, y_pred, output_dict=True) # correct
-    # cr = classification_report(y_pred, y_true, output_dict=True) # wrong
-
     with open(output_dir + f'{name}_cr.txt', 'w') as f:
         print(cr, file=f)
+
+    # cr = classification_report(y_pred, y_true, output_dict=True) # wrong
+    # with open(output_dir + f'old_{name}_cr.txt', 'w') as f:
+    #     print(cr, file=f)
 
 def eval_model_from_file(output_dir, name, groundtruths_path, preds_path):
     with open(groundtruths_path, 'r') as gt, open(preds_path, 'r') as p:
