@@ -3,9 +3,9 @@
 
 ## Introduction
 Zeng et al. (2022) [[1]](#sm) introduce Socratic
-Models (SMs). SMs enable the composition of multiple large, pre-trained models in a modular framework, allowing them to exchange information with one another and to tackle new multimodal challenges without the need for finetuning. These models are based on large pre-trained models and can vary their capabilities wildly depending on the domain they are trained on. By combining such models, SMs have been shown to be competitive with state-of-the-art zero-shot image captioning and video-to-text retrieval. Moreover, SMs can additionally be extended using non-neural modules, such as a web-crawler. As such, SMs open up a range of new applications including answering free-form questions about the egocentric video, engaging in multimodal assistive dialogue with people by interfacing with external APIs and databases, and robot perception and planning.
+Models (SMs). SMs enable the composition of multiple large, pre-trained models in a modular framework, allowing them to exchange information with one another and to tackle new multimodal challenges without the need for fine-tuning. These models are based on large pretrained models and can vary their capabilities wildly depending on the domain they are trained on. By combining such models, SMs have been shown to be competitive with state-of-the-art zero-shot image captioning and video-to-text retrieval. Moreover, SMs can additionally be extended using non-neural modules, such as a web-crawler. As such, SMs open up a range of new applications including answering free-form questions about the egocentric video, engaging in multimodal assistive dialogue with people by interfacing with external APIs and databases, and robot perception and planning.
 
-To see how far the adaptability of SMs goes, several experiments were run to test SMs capability to solve logical vision-language problems out of the box. The SM is compared to an oracle LM baseline and Flamingo.
+To see how far the adaptability of SMs goes, several experiments were run to test SMs capability to solve logical vision-language problems out of the box. In our experiments, SM is compared to an oracle LM and Flamingo models as baselines.
 
 ## Socratic Models
 ### Background
