@@ -13,6 +13,7 @@ The core concept of SMs is to harness what Zeng et al. (2022) call differences i
 <p align="center">
 <img src="https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png"/>
 </p>
+
 Figure 1. Source: [[1]](#sm). Differing and complementary commonsense knowledge learned by different foundation models of differing modalities.
 
 Furthermore, SMs are designed to facilitate human-like reasoning and interpretation. They aim to emulate the Socratic method, a philosophical approach that involves asking probing questions to stimulate critical thinking and uncover deeper insights. SMs employ similar techniques by generating questions, seeking clarifications, and engaging in interactive dialogue with users. This approach enhances the model's ability to understand complex concepts, handle ambiguity, and provide more nuanced responses.
@@ -42,6 +43,7 @@ For all experiments, the pipeline is tested on the Center Single subset of the R
 <p align="center">
 <img src="https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png"/>
 </p>
+
 Figure 2. RPM Examples. The top 8 figures with the missing shape form a logical puzzles, where the missing shape should be filled with one of the 8 answers below. Only one answer can be correct at a time.
 
 
@@ -49,7 +51,7 @@ Figure 2. RPM Examples. The top 8 figures with the missing shape form a logical 
 The baseline we use to compare our pipeline is from the paper that originated the RPM dataset [[2]](#raven). In the paper, they used a Dynamically Residual Tree to solve the puzzles. The Dynamically Residual Tree is a tree traversal algorithm which solves the puzzle by going through the nodes. To get the visual encoding of the shapes, they used ResNET. After training, their algorithm was compared to human performance and a logical solver algorithm.
 
 <div align="center">
-Table 1. Baseline for comparison
+Table 1. Baseline for comparison to SM
 
 | Model| accuracy   |
 |------|-------------|
@@ -85,6 +87,7 @@ In this experiment, we used three different architechtures, each incorporating a
 <p align="center">
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b"/>
 </p>
+
 Figure 3. The proposed pipeline starts by taking a puzzle and annotating its attributes using a visual module. These attributes are then combined to form a prompt, which is passed down to the language model. Finally, the language model generates the final answer.
 
 CLIP (Contrastive Language-Image Pretraining) is a state-of-the-art Visual-Linguistic Model (VLM) designed for zero-shot classification [[5]](#CLIP). It achieves this by training on a large dataset of image-text pairs, enabling it to understand and relate images and their corresponding textual descriptions. By leveraging this pretraining, CLIP can generalize to classify images even without specific training on the target classes, making it a powerful tool for zero-shot classification tasks.
@@ -122,6 +125,7 @@ Table 2. Socratic Model Test Results:
 <p align="center">
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc"/>
 </p>
+
 Figure 5. Schematic representation of OpenFlamingo [[3]](#flam).
 
 We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As Flamingo is not open source, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead.
