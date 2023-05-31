@@ -34,7 +34,7 @@ The Socratic Model is tested on the Center Single subset of the Raven Progressiv
 
 
 ### Baselines
-The baseline we use to compare our Socratic Model to, is from the paper [[2]](#raven). They used a Dynamically Residual Tree, to solve the Raven Dataset. To get the Visual Encoding of the shapes, they used ResNET. They also compared it to human performance and a solver.
+The baseline we use to compare our Socratic Model to, is from the paper [[2]](#raven) of the Socratic Model. They used a Dynamically Residual Tree, to solve the Raven Dataset. The Dynamically Residual Tree is a Tree traversal algorithm, which solves the puzzle by going through the nodes. To get the Visual Encoding of the shapes, they used ResNET. They also compared it to human performance and a solver.
 
 Table 1. Baseline for comparison
 
@@ -57,6 +57,7 @@ Table 2. Experiment 1
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
 
 ### Experiment 2 The Socratic Model
+With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. 
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/a2f98ac5-a13c-4349-be16-dda4ee6bc6b4)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
@@ -73,9 +74,7 @@ Table 2. Experiment 1
 Table 2. Results for different SM configurations.
 
 ### Experiment 3 OpenFlamingo
-We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning, which will be explained in Experiment 3. It uses gates to constrain the LM with the encoded vision input, which is RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses OPT as LM with 3B parameters.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 3B parameter Language Model, which is the same size as FlanT5-XL, OpenFlamingo is not trained to handle this problem accurately.  In the second experiment, the LLM and Vision encoders are connected to predict the answer of the RPM. 
-
-In the third experiment, we run OpenFlamingo on the Center_single set. What immediately becomes clear is that OpenFlamingo, within the multiple choices, only gives the shape number 2,6 and 7 also solution. Shapes 0,1,3,4 and 5 are never given as solution. With this notion could be concluded that, without retraining, OpenFlamingo could not solve the Raven dataset. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture.
+We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning, which will be explained in Experiment 3. It uses gates to constrain the LM with the encoded vision input, which is RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses OPT as LM with 3B parameters.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 3B parameter Language Model, which is the same size as FlanT5-XL, OpenFlamingo is not trained to handle this problem accurately. This could be seen by the fact that, within the multiple choices, OpenFlamingo only gives the shape number 2,6 and 7 as solution. Shapes 0,1,3,4 and 5 are never given as solution. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture.
 
 Table 3. OpenFlamingo
 
