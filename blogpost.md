@@ -85,6 +85,8 @@ Figure 3. The proposed pipeline starts by taking a puzzle and annotating its att
 
 CLIP (Contrastive Language-Image Pretraining) is a state-of-the-art Visual-Linguistic Model (VLM) designed for zero-shot classification [[5]](#CLIP). It achieves this by training on a large dataset of image-text pairs, enabling it to understand and relate images and their corresponding textual descriptions. By leveraging this pretraining, CLIP can generalize to classify images even without specific training on the target classes, making it a powerful tool for zero-shot classification tasks.
 
+For our implementation, we used the ViT-B/32 Transformer architecture from Huggingface's Transformers library, which is publicly available. Our approach involved providing the model with templates containing different attributes for each figure in the puzzle. The model then assigns probabilities to determine the most suitable caption, which we pass to the next step in the pipeline.
+
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
 
 Figure 4. The OpenCV method explained.
