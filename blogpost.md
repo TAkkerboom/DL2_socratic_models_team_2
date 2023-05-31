@@ -62,7 +62,7 @@ To look at the components of the SM individually, we first tested the LM on the 
 
 As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit even on the LISA cluster. Additionally, we did not use the smaller FlanT5 models that are available, as the performance drop from XL to L suggests that using fewer parameters would not yield a desirable result.
 
-Table 2. Experiment 1
+Table 2. Standalone Language Model Test Results:
 
 | Model (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|---|
@@ -92,6 +92,8 @@ The OpenCV method obtains the shape of the image by extracting the corners of th
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
 
+Table 2. Socratic Model Test Results:
+
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|----|
 | CLiP + FT5-L (TODO/770M)    | TODO      | TODO   | TODO | TODO |
@@ -101,7 +103,7 @@ The OpenCV method obtains the shape of the image by extracting the corners of th
 | CV2 + FT5-L (-/770M)     | 0.150      | 0.136   | 0.140 | 0.136 |
 | CV2 + FT5-XL (-/3B)     | 0.152      | 0.129   | 0.136 | 0.129 |
 
-Table 2. Results for different SM configurations.
+
 
 ### Experiment 3: OpenFlamingo
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc)
@@ -116,7 +118,7 @@ It is important to note that OpenFlamingo's primary training focus lies on capti
 
 However, based on the findings from Experiment 1, it is evident that Flamingo, a unique architecture that combines a Vision encoder with a Large Language Model, has the potential to effectively solve the Raven dataset.
 
-Table 3. OpenFlamingo
+Table 3. OpenFlamingo Test Results:
 
 | Model (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|---|
