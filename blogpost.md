@@ -34,24 +34,32 @@ The Socratic Model is tested on the Center Single subset of the Raven Progressiv
 
 
 ### Baselines
-To see how the SM does, we need to compare it to a baseline. To do this, provide the LM to be used in the SM with the ground truth attributes in the RPM. Several sizes of the FlanT5 model were used. Additionally, the SM is compared to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. As shown in table 1, the number of parameters in the LM matters greatly in its understanding of logical problems, with the XL model having nearly double the accuracy of the L model. We would have liked to use the XXL version also, although with its 11B parameters, it did not fit on the LISA cluster. Additionally, we did not use smaller FlanT5 models that are available, as the performance drop from XL to L suggests going smaller still would not be fruitful. We also see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). This suggests that OpenFlamingo's commonsense knowledge is used mostly to capture the connection between images and language, and not on a deeper understanding of language, even though its number of parameters is large enough to allow such understanding.
+The baseline we use to compare our Socratic Model to, is from the paper [[2]](#raven) of the Socratic Model. They used a Dynamically Residual Tree, to solve the Raven Dataset. The Dynamically Residual Tree is a Tree traversal algorithm, which solves the puzzle by going through the nodes. To get the Visual Encoding of the shapes, they used ResNET. They also compared it to human performance and a solver.
 
+Table 1. Baseline for comparison
+
+| Model| accuracy   |
+|------|-------------|
+| ResNET +DRT   |  0.58     |
+| Human         |  0.95     |
+| Solver        |  1.00     |
+
+
+## Methods and Results
+### Experiment 1
+To look at the components of the SM individually, we first tested the LM on the groundtruth attributes of the shapes of the RPM; shapes,color, size and angle. This experiment is done to assess the capibilities of the Langauge Model to solve the RPM with perfect information. Several sizes of the FlanT5 model were used. As shown in table 2, the number of parameters in the LM matters greatly in its understanding of logical problems, with the XL model having nearly double the accuracy of the L model. We would have liked to use the XXL version also, although with its 11B parameters, it did not fit on the LISA cluster. Additionally, we did not use smaller FlanT5 models that are available, as the performance drop from XL to L suggests going smaller still would not be fruitful. 
+
+Table 2. Experiment 1
 
 | Model (num. params) | Precision | Recall | F1   |
 |---------------------|-----------|--------|------|
 | LM: FT5-L (770M)    | 0.46      | 0.45   | 0.45 |
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
-| VLM: OpenFlamingo (9B)       | 0.04      | 0.11   | 0.13 |
 
-Table 1. Metrics for several baseline models and their parameters.
+### Experiment 2 The Socratic Model
+With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection. Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
 
-## Methods and Results
-
-
-### SM Configurations
-In this experiment different LLMs are tested to predict the answer of the RPM, based on the groundtruth shape, color, size and angle of the images. This experiment is done to assess the capibilities of the Langauge Model to solve the RPM with perfect information.
-
-![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/a2f98ac5-a13c-4349-be16-dda4ee6bc6b4)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
 
@@ -66,33 +74,25 @@ In this experiment different LLMs are tested to predict the answer of the RPM, b
 
 Table 2. Results for different SM configurations.
 
-In the third experiment, we run OpenFlamingo on the Center_single set. What immediately becomes clear is that OpenFlamingo, within the multiple choices, only gives the shape number 2,6 and 7 also solution. Shapes 0,1,3,4 and 5 are never given as solution. With this notion could be concluded that, without retraining, OpenFlamingo could not solve the Raven dataset. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture.
+### Experiment 3 OpenFlamingo
+We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning, which will be explained in Experiment 3. It uses gates to constrain the LM with the encoded vision input, which is RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses OPT as LM with 3B parameters.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 3B parameter Language Model, which is the same size as FlanT5-XL, OpenFlamingo is not trained to handle this problem accurately. This could be seen by the fact that, within the multiple choices, OpenFlamingo only gives the shape number 2,6 and 7 as solution. Shapes 0,1,3,4 and 5 are never given as solution. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture.
 
+Table 3. OpenFlamingo
 
-
-| Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
-|---------------|------------------------|---------------------------|----------|
-| CLIP + Flant5 |                        |                           |          |
-| OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
-
+| Model (num. params) | Precision | Recall | F1   |
+|---------------------|-----------|--------|------|
+| VLM: OpenFlamingo (9B)       | 0.04      | 0.11   | 0.13 |
 
 ## Conclusion
-| **Our method**|                        |                           |          |
-|---------------|------------------------|---------------------------|----------|
-| Model         | Macro average F1 score | Weighted average F1 score | Accuracy |
-| CLIP + Flant5 |                        |                           |          |
-| OpenFlamingo  | 0.05                   | 0.05                      | 0.13     |
-| **Other method**                       |                           |          |
-| LSTM          |                        |                           | 0.13     |
-| WReN          |                        |                           | 0.13     |
-| CNN           |                        |                           | 0.34     |
-| ResNET        |                        |                           | 0.52     |
-| LSTM+DRT      |                        |                           | 0.14     |
-| WReN +DRT     |                        |                           | 0.15     |
-| CNN +DRT      |                        |                           | 0.37     |
-| ResNET +DRT   |                        |                           | 0.58     |
-| Human         |                        |                           | 0.95     |
-| Solver        |                        |                           | 1.00     |
+| Model | Accuracy          |
+|---------------|-------------------|
+| **Our method** |   |
+| CLIP + Flant5 |            |
+| OpenFlamingo  |  0.13     |
+| **Baseline**              |
+| ResNET +DRT   |  0.58     |
+| Human         |  0.95     |
+| Solver        |  1.00     |
 
 
 ## References
