@@ -47,7 +47,7 @@ Table 1. Baseline for comparison
 
 ## Methods and Results
 ### Experiment 1
-To look at the components of the SM individually, we first tested the LM on the groundtruth attributes of the shapes of the RPM; shapes,color, size and angle. This experiment is done to assess the capibilities of the Langauge Model to solve the RPM with perfect information. Several sizes of the FlanT5 model were used. As shown in table 2, the number of parameters in the LM matters greatly in its understanding of logical problems, with the XL model having nearly double the accuracy of the L model. We would have liked to use the XXL version also, although with its 11B parameters, it did not fit on the LISA cluster. Additionally, we did not use smaller FlanT5 models that are available, as the performance drop from XL to L suggests going smaller still would not be fruitful. 
+To look at the components of the SM individually, we first tested the LM on the groundtruth attributes of the shapes of the RPM; shapes,color, size and angle. This experiment is done to assess the capibilities of the Language Model to solve the RPM with perfect information. For the Language Model, we choose FlanT5, because it is openaccess, doesn't require an API key and is trained on chain-of-thought. This means that it can, according to [[4]](#flant5), reason about mathematical problems.  Several sizes of the FlanT5 model were used. As shown in table 2, the number of parameters in the LM matters greatly in its understanding of logical problems, with the XL model having nearly double the accuracy of the L model. We would have liked to use the XXL version also, although with its 11B parameters, it did not fit on the LISA cluster. Additionally, we did not use smaller FlanT5 models that are available, as the performance drop from XL to L suggests going smaller still would not be fruitful. 
 
 Table 2. Experiment 1
 
@@ -55,6 +55,8 @@ Table 2. Experiment 1
 |---------------------|-----------|--------|------|
 | LM: FT5-L (770M)    | 0.46      | 0.45   | 0.45 |
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
+
+As a prompt we used the following format; **You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}. In the {}, the attributes of the shapes are explained.**
 
 ### Experiment 2 The Socratic Model
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
@@ -65,7 +67,7 @@ With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Comput
 <br> Figure 4. The OpenCV method explained.
 <br><br>
 
-The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection. Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
+The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection[[5]](#OpenCV). Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
 
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
@@ -84,7 +86,7 @@ Table 2. Results for different SM configurations.
 ### Experiment 3 OpenFlamingo
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc)<br> Figure 5. Schematic representation of OpenFlamingo [[3]](#flam). 
 
-We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses LLama as LM with 7B parameters and CLIP as a vision encoder. Because the vision encoder is equal to the vision encoder we use in the Socratic Model in Experiment 2, and the amount of parameters is higher for the LLM, the performance should in theory be better than the Socratic Model. The opposite is true.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 7B parameter Language Model, which is more parameters than FlanT5-XL, OpenFlamingo is not trained to handle logical puzzles accurately, with both a vision and a cognition aspect. OpenFlamingo is trained mostly on captioning and VQA, not on logical reasoning. This could be seen by the fact that, within the multiple choices, OpenFlamingo only gives the shape number 3,7 and 8 as solution. Shapes 1,2,4,5 and 6 are never given as solution. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture, thereby preventing error accumulation.
+We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As flamingo is not opensource, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. OpenFlamingo uses LLama as LM with 7B parameters and CLIP as a vision encoder. Because the vision encoder is equal to the vision encoder we use in the Socratic Model in Experiment 2, and the amount of parameters is higher for the LLM, the performance should in theory be better than the Socratic Model. The opposite is true.  We see that the OpenFlamingo model struggles to understand the the problem, having lower accuracy than random guessing (1/8 or 0.125). Although OpenFlamingo uses a 7B parameter Language Model, which is more parameters than FlanT5-XL, OpenFlamingo is not trained to handle logical puzzles accurately, with both a vision and a cognition aspect. OpenFlamingo is trained mostly on captioning and VQA, not on logical reasoning. The trainingset of OpenFlamingo also mostly consists of photographs, not on geometric shapes. This could be seen by the fact that, within the multiple choices, OpenFlamingo only gives the shape number 3,7 and 8 as solution. Shapes 1,2,4,5 and 6 are never given as solution. Because of the high accuracy of the different Language Models given perfect information, shown in Experiment 1, Flamingo has potential to solve the Raven dataset, because it fuses an Vision encoder and a Large Language Model in one architecture, thereby preventing error accumulation.
 
 Table 3. OpenFlamingo
 
@@ -113,3 +115,9 @@ Table 3. OpenFlamingo
 
 <a id="flam"></a> [[3]](https://arxiv.org/abs/2204.14198) Jean-Baptiste Alayrac, Jeff Donahue, Pauline Luc, Antoine Miech, Iain Barr, Yana Hasson, Karel Lenc, Arthur Mensch, Katherine Millican, Malcolm Reynolds, Roman Ring, Eliza Rutherford, Serkan Cabi, Tengda Han, Zhitao Gong, Sina Samangooei, Marianne Monteiro, Jacob L. Menick, Sebastian Borgeaud, Andy Brock, Aida Nematzadeh, Sahand Sharifzadeh, Mikolaj Binkowski, Ricardo Barreira, Oriol Vinyals, Andrew Zisserman, Karén Simonyan:
 **Flamingo: a Visual Language Model for Few-Shot Learning.** *Advances in Neural Information Processing Systems, 35, 23716-23736* (2022)
+
+<a id="flant5"></a> [[4]](https://arxiv.org/abs/2210.11416) Hyung Won Chung, Le Hou, Shayne Longpre, Barret Zoph, Yi Tay, William Fedus, Yunxuan Li, Xuezhi Wang, Mostafa Dehghani, Siddhartha Brahma, Albert Webson, Shixiang Shane Gu, Zhuyun Dai, Mirac Suzgun, Xinyun Chen, Aakanksha Chowdhery, Alex Castro-Ros, Marie Pellat, Kevin Robinson, Dasha Valter, Sharan Narang, Gaurav Mishra, Adams Yu, Vincent Zhao, Yanping Huang, Andrew Dai, Hongkun Yu, Slav Petrov, Ed H. Chi, Jeff Dean, Jacob Devlin, Adam Roberts, Denny Zhou, Quoc V. Le, Jason Wei:
+**Scaling Instruction-Finetuned Language Models** *arXiv preprint arXiv:2210.11416* (2022)
+
+<a id="OpenCV"></a> [[5]](http://roswiki.autolabor.com.cn/attachments/Events(2f)ICRA2010Tutorial/ICRA_2010_OpenCV_Tutorial.pdf) Bradski, G.:
+**The OpenCV library** *Dr. Dobb's Journal of Software Tools* (2022)
