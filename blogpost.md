@@ -133,17 +133,19 @@ Table 3. OpenFlamingo Test Results:
 
 
 ## Discussion
-[TODO: SUMMARISE RESULTS AND INSIGHTS FROM RESEARCH]
+This research project aimed to explore the effectiveness of Socratic Models in solving logical puzzles presented as images with Raven Progressive Matrices. SMs have several advantages, including their ability to utilize pre-trained models, facilitate human-like reasoning, and enable multimodal understanding. However, there are also challenges associated with SMs, such as error propagation and the absence of a shared embedding space among the constituent models.
+
+The findings reveal that the standalone Language Model (LM) performs quite well, with FlanT5-XL achieving an accuracy of 0.78. However, when used in a combination with a VLM, the performance dropped significantly
 
 Table 4. Results Summary:
 
 | Model | Accuracy          |
 |---------------|-------------------|
-| **Our method** |   |
-| CLIP + Flant5 |            |
-| OpenFlamingo  |  0.13     |
+| Flant5XL      | 0.78  |
+| CLIP + Flant5XL | 0.127   |
+| OpenFlamingo  |  0.11     |
 | **Baseline**              |
-| ResNET +DRT   |  0.58     |
+| ResNET + DRT   |  0.58     |
 | Human         |  0.95     |
 | Solver        |  1.00     |
 
