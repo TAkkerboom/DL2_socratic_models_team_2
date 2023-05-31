@@ -40,8 +40,9 @@ The proposed work aims to construct a pipeline for the SM framework, incorporati
 ### Raven Progressive Matrices
 For all experiments, the pipeline is tested on the Center Single subset of the Raven Progressive Matrices dataset by Zhang et al. (2019) [[2]](#raven). An RPM consists of a three-by-three grid of items, with the final item missing. There are eight potential solutions of which the model must pick the missing shape to finish the pattern. An example is shown in Figure 2 below. This study aims to provide a proof-of-concept for solving logical puzzles such as RPMs with SMs and thus sticks to the centre single subset to avoid logistic difficulties. Each item contains a single shape (triangle, square, circle, hexagon, or pentagon). The correct answer is identified by the shape itself and its additional attributes, namely size, colour, and angle. Additional subsets exist, namely with multiple shapes and even overlapping shapes in each of the sections/answers, and further research could tackle those, along with entirely different datasets.
 
-<br>![image](https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png)<br> Figure 2. RPM Examples. Top: RPM problem with missing answer in the bottom-right corner, bottom: possible answers for the model to choose from.
+<br>![image](https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png)
 
+Figure 2. RPM Examples. The top 8 figures with the missing shape form a logical puzzles, where the missing shape should be filled with one of the 8 answers below. Only one answer can be correct at a time.
 
 ### Baselines
 The baseline we use to compare our Socratic Model to, is from the paper [[2]](#raven) of the Socratic Model. They used a Dynamically Residual Tree, to solve the Raven Dataset. The Dynamically Residual Tree is a Tree traversal algorithm, which solves the puzzle by going through the nodes. To get the Visual Encoding of the shapes, they used ResNET. They also compared it to human performance and a solver.
