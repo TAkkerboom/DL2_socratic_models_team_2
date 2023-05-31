@@ -56,7 +56,9 @@ Table 2. Experiment 1
 | LM: FT5-L (770M)    | 0.46      | 0.45   | 0.45 |
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
 
-As a prompt we used the following format; **You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}. In the {}, the attributes of the shapes are explained.**
+As a prompt we used the following format; **You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}.**
+
+In the {}, the attributes of the shapes are explained.
 
 ### Experiment 2 The Socratic Model
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
