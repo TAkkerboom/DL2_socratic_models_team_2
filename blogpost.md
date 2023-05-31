@@ -58,7 +58,7 @@ Table 1. Baseline for comparison
 
 ## Methods and Results
 ### Experiment 1: Standalone Language Model
-To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles: *shapes, colour, size* and *angle*. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model FlanT5 was chosen, because it is the largest, freely available open-source model, it does not require an API key, and it is trained on chain-of-thought. This means that it can reason about logical problems quite well [[4]](#flant5). Several sizes of the FlanT5 model were used.
+To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles: *shapes, colour, size* and *angle*. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model FlanT5 [[4]](#flant5) was chosen, because it is the largest, freely available open-source model. It has been shown that large models (multiple billions of parameters) can develop emergent abilities, abilities not present in smaller models [[10]](#emergent). By using a large model like FlanT5 it is more likely that it possesses the ability to solve logical problems through language. Additionally, FlanT5 does not require an API key, and it is trained on chain-of-thought.
 
 As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit on the LISA cluster. FlanT5's performance drop from XL to L suggests that using even fewer parameters would not yield worthwhile results. Informal testing on the base (220M) and small (60M) versions of FlanT5 showed exactly that, and thus they were not investigated further.
 
@@ -95,7 +95,7 @@ We used BLIP Visual Question Answering model trained with ViT base backbone in o
 
 Figure 4. The OpenCV method explained.
 
-The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle. The angle is set to an arbitrary value, in our case to 0. 
+The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle. The angle is set to an arbitrary value, in our case to 0.
 
 The results of all three architechtures are available in Table 2.
 
@@ -159,7 +159,13 @@ The previous section highlighted that SMs struggled in solving RPM, while standa
 
 To further enhance the SM, we can consider incorporating an additional VLM step at the end. By prompting the language model to generate multiple answers, we can then employ zero-shot classification using CLIP to select the answer that aligns most logically with the visual context.
 
+It is possible, if not likely, that the SM's poor performance in our experiments was at least partly as a result of the SM not fully understanding what an RPM was, and thus what it was being asked to solve. Few-shot learning has been shown to improve LM performance on a variety of tasks, without the need for gradient updates or finetuning [[8]](#lm_fsl), and might thus provide the SM with a few precious examples to help it along.
+
+Additionally, further research could explore prompt tuning. Due to time restrictions, only a few, hand-selected prompts were experimented with on a small scale. The most promising of which was kept and used for all further experiments. Liu et al. (2022) [[9]](#p-tune) have shown that effective prompt tuning has the potential to bring the same performance benefits as finetuning, without the cost associated with finetuning. This falls inline with SMs goals of accessibility, both computationally and knowledge-wise.
+
 Lastly, the assessment of SMs can be broadened by incorporating a wider range of benchmarks that are more comprehensive and diverse. Although the current research project primarily concentrated on Raven Progressive Matrices as the main testing ground, future research could encompass the evaluation of SMs using other logical puzzle datasets or exploring real-world applications that demand visual-language reasoning. An example of such a benchmark could be the inclusion of visual questions derived from driving theory exams. This particular domain presents an ideal opportunity for testing SMs as it combines both logical and visual reasoning elements.
+
+
 
 ## References
 <a id="sm"></a> [[1]](https://arxiv.org/abs/2204.00598) Andy Zeng, Adrian Wong, Stefan Welker, Krzysztof Choromanski, Federico Tombari, Aveek Purohit, Michael S. Ryoo, Vikas Sindhwani, Johnny Lee, Vincent Vanhoucke, Pete Florence:
@@ -182,3 +188,12 @@ Lastly, the assessment of SMs can be broadened by incorporating a wider range of
 
 <a id="OpenCV"></a> [[7]](http://roswiki.autolabor.com.cn/attachments/Events(2f)ICRA2010Tutorial/ICRA_2010_OpenCV_Tutorial.pdf) Bradski, G.:
 **The OpenCV library** *Dr. Dobb's Journal of Software Tools* (2022)
+
+<a id="lm_fsl"></a> [[8]](https://proceedings.neurips.cc/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf) Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel M. Ziegler, Jeffrey Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, Dario Amodei:
+**Language Models are Few-Shot Learners** *Advances in neural information processing systems, 33, 1877-1901*
+
+<a id="p-tune"></a> [[9]](https://aclanthology.org/2022.acl-short.8.pdf) Xiao Liu, Kaixuan Ji, Yicheng Fu, Weng Tam, Zhengxiao Du, Zhilin Yang, Jie Tang:
+**P-Tuning: Prompt Tuning Can Be Comparable to Fine-tuning Across Scales and Tasks** *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) (pp. 61-68)*
+
+<a id="emergent"></a> [[10]](https://arxiv.org/pdf/2206.07682) Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, Ed H. Chi, Tatsunori Hashimoto, Oriol Vinyals, Percy Liang, Jeff Dean, William Fedus:
+**Emergent Abilities of Large Language Models** *arXiv preprint arXiv:2206.07682*
