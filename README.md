@@ -38,8 +38,6 @@ python main.py
 |   |-- experiment_3.ipynb
 |
 |-- output                # Output of the experiments
-|   |-- experiment1
-|   |-- experiment2
 |
 |-- src                   # Source code of the pipeline
 |   |-- const.py     
