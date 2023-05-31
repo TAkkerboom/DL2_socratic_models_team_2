@@ -11,7 +11,9 @@ To see how far the adaptability of SMs goes, several experiments were run to tes
 ### Background
 The core concept of SMs is to harness what Zeng et al. (2022) call differences in common sense knowledge. Visual Language Models (VLMs), for example, are trained on image captions, and thus develop understanding of the connection between images and language. Language Models (LMs) are trained on additional corpora that do not need to possess a visual aspect, such as novels or recipes. As such, they are applicable to a wide variety of linguistic tasks. By using SMs, we can harness these complementary differences in knowledge and apply them to both existing and new tasks out-of-the-box.
 
-![image](https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png 'Figure 1') From [[1]](#sm): Differing and complementary commonsense knowledge learned by different foundation models.
+![image](https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png)
+
+Figure from [[1]](#sm): Differing and complementary commonsense knowledge learned by different foundation models.
 
 [TODO: ADD MORE INFORMATION]
 
