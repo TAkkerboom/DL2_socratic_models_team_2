@@ -112,12 +112,12 @@ Table 3. Socratic Model Test Results:
 
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|----|
-| CLIP + FlanT5-L (770M)    | 0.136      | 0.136   | 0.120 | 0.136 |
-| CLIP + FlanT5-XL (3B)     | 0.127     | 0.118   | 0.097 | 0.118 |
-| BLIP + FlanT5-L (770M)     | 0.136      | 0.127   | 0.107 | 0.127 |
-| BLIP + FlanT5-XL (3B)     | TODO      | TODO   | TODO | TODO |
-| CV2 + FlanT5-L (770M)     | 0.136      | 0.136   | 0.132 | 0.136 |
-| CV2 + FlanT5-XL (3B)     | 0.126      | 0.129   | 0.122 | 0.129 |
+| CLIP + FlanT5-L (770M)    | 0.139      | 0.170   | 0.139 | 0.170 |
+| CLIP + FlanT5-XL (3B)     | 0.161     | 0.183   | 0.140 | 0.183 |
+| BLIP + FlanT5-L (770M)     | 0.119      | 0.154   | 0.117 | 0.154 |
+| BLIP + FlanT5-XL (3B)     | 0.163      | 0.1745   | 0.124 | 0.175 |
+| CV2 + FlanT5-L (770M)     | 0.278      | 0.284   | 0.274 | 0.284 |
+| CV2 + FlanT5-XL (3B)     | 0.452     | 0.410   | 0.403 | 0.410 |
 </div>
 
 
@@ -160,7 +160,8 @@ Table 5. Results Summary:
 | Model | Accuracy          |
 |---------------|-------------------|
 | FlanT5-XL      | 0.78  |
-| CLIP + FlanT5-XL | 0.127   |
+| CLIP + FlanT5-XL | 0.183   |
+| BLIP + FlanT5-XL | 0.175   |
 | OpenFlamingo  |  0.11     |
 | **Baseline**              |
 | ResNET + DRT   |  0.58     |
