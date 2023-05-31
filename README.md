@@ -1,4 +1,6 @@
 # Socratic Models - Team 2
+| Sergei Agaronian, Theodoor Akkerboom, Maarten Drinhuyzen, Wenkai Pan, Marius Strampel
+
 This Github is made for the course, Deep Learning 2 from the Universiteit van Amsterdam. With this project, a Socratic Model is made to predict the answer of the Raven Progressive Matrices(RPM). This is a visual IQ Test.
 
 # Structure
