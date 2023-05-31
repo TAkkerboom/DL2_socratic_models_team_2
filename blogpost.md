@@ -77,7 +77,7 @@ The following prompt was used to solve the puzzles:
 In the {}, the attributes of the individual figures (shape, colour, angle, size) are explained.
 
 ### Experiment 2: Socratic Model
-In this experiment, we used three different architectures, each incorporating a unique visual module. The initial two architectures employed VLMs, namely CLIP and BLIP, while the third one relied on traditional OpenCV methods. For a visual depiction of the pipeline, please consult Figure 3.
+In this experiment, we used three different architechtures, each incorporating a unique visual module. The initial two architectures employed VLMs, namely CLIP and BLIP, while the third one relied on traditional OpenCV methods. For a visual depiction of the pipeline, please consult Figure 3.
 
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)
 
@@ -94,13 +94,10 @@ We used BLIP Visual Question Answering model trained with ViT base backbone in o
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
 
 Figure 4. The OpenCV method explained.
-<br><br>
 
 The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle.
 
-
-[TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
-The results of experiment 2 are shown in table 2.
+The results of all three architechtures are available in Table 2.
 
 Table 2. Socratic Model Test Results:
 
