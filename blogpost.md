@@ -89,6 +89,8 @@ For our implementation, we used the ViT-B/32 Transformer architecture from Huggi
 
 We also use a model called BLIP (Bootstrapping Language-Image Pre-training) [[6]](#BLIP). By incorporating both visual and textual data, BLIP allows the model to acquire comprehensive representations that effectively capture the semantic connections between images and their accompanying textual descriptions. As a result, this enhances the model's performance in various tasks like image captioning and visual question answering.
 
+We used BLIP Visual Question Answering model trained with ViT base backbone in our implementation. This model is readily available via Huggingface's Transformers library and was contributed by Salesforce. In our pipeline, we input the puzzle and prompt the model to generate a description of its attributes. Unlike CLIP, BLIP is a generative model, which means its output is not limited to specific values. Important to note that this characteristic can introduce ambiguity in the overall pipeline.
+
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
 
 Figure 4. The OpenCV method explained.
