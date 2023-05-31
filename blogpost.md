@@ -69,7 +69,7 @@ Table 2. Standalone Language Model Test Results:
 | LM: FT5-L (770M)    | 0.46      | 0.45   | 0.44 | 0.45 |
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 | 0.78 |
 
-The following prompr was used to solve the puzzles:
+The following prompt was used to solve the puzzles:
 
 ***You are given a logic puzzle from the RAVEN dataset. The first shape on the first row is {}, the second shape on the first row is {}, the third item on the first row is {}. The first shape on the second row is {}, the second shape on the second row is a {}, the third shape on the second row is {}. The first shape on the third row is {}, the second shape is {}. Based on this, what is the third shape on the third row? You can only choose between: {}, {}, {}, {}, {}, {}, {}, {}.***
 
