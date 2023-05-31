@@ -58,7 +58,9 @@ Table 1. Baseline for comparison
 
 ## Methods and Results
 ### Experiment 1
-To look at the components of the SM individually, we first tested the LM on the groundtruth attributes of the shapes of the RPM; shapes,color, size and angle. This experiment is done to assess the capibilities of the Language Model to solve the RPM with perfect information. For the Language Model, we choose FlanT5, because it is openaccess, doesn't require an API key and is trained on chain-of-thought. This means that it can, according to [[4]](#flant5), reason about mathematical problems.  Several sizes of the FlanT5 model were used. As shown in table 2, the number of parameters in the LM matters greatly in its understanding of logical problems, with the XL model having nearly double the accuracy of the L model. We would have liked to use the XXL version also, although with its 11B parameters, it did not fit on the LISA cluster. Additionally, we did not use smaller FlanT5 models that are available, as the performance drop from XL to L suggests going smaller still would not be fruitful.
+To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles; shapes, colour, size and angle. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model, we choose FlanT5, because it is the largest open-source model, does not require an API key, and is trained on chain-of-thought. This means that it can, according to [[4]](#flant5), reason about logical problems quite well. Several sizes of the FlanT5 model were used. 
+
+As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit even on the LISA cluster. Additionally, we did not use the smaller FlanT5 models that are available, as the performance drop from XL to L suggests that using fewer parameters would not yield a desirable result.
 
 Table 2. Experiment 1
 
