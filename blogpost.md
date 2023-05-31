@@ -168,7 +168,7 @@ Table 4. TODO: Comparison of SM and OpenFlamingo accuracies to baselines.
 <a id="CLIP"></a> [[5]](https://arxiv.org/abs/2103.00020) Radford, Alec and Kim, Jong Wook and Hallacy, Chris and Ramesh, Aditya and Goh, Gabriel and Agarwal, Sandhini and Sastry, Girish and Askell, Amanda and Mishkin, Pamela and Clark, Jack and others:
 **Learning transferable visual models from natural language supervision** *arXiv preprint arXiv:2103.00020* (2021)
 
-<a id="BLIP"></a> [[5]](https://arxiv.org/abs/2201.12086) Li, Junnan and Li, Dongxu and Xiong, Caiming and Hoi, Steven:
+<a id="BLIP"></a> [[6]](https://arxiv.org/abs/2201.12086) Li, Junnan and Li, Dongxu and Xiong, Caiming and Hoi, Steven:
 **Blip: Bootstrapping language-image pre-training for unified vision-language understanding and generation** *arXiv preprint 	arXiv:2201.12086* (2022)
 
 <a id="OpenCV"></a> [[7]](http://roswiki.autolabor.com.cn/attachments/Events(2f)ICRA2010Tutorial/ICRA_2010_OpenCV_Tutorial.pdf) Bradski, G.:
