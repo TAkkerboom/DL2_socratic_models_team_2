@@ -8,6 +8,14 @@ This Github is made for the course, Deep Learning 2 from the Universiteit van Am
 ```
 conda env create -f socrat.yml
 ```
+2. Activate the environment:
+```
+conda activate socrat
+```
+3. Run the main file:
+```
+python main.py
+```
 # Structure
 ```
 .
