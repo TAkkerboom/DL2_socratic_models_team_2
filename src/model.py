@@ -23,7 +23,7 @@ class VLM:
 
 
 class CLIP:
-    def __init__(self, model_name="Salesforce/blip-vqa-base", device="cpu"):
+    def __init__(self, model_name="openai/clip-vit-base-patch32", device="cpu"):
         self.device = device
         self.processor = CLIPProcessor.from_pretrained(model_name)
         self.model = CLIPModel.from_pretrained(model_name)
