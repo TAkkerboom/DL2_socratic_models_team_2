@@ -314,7 +314,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm, eval=True):
                 preds.append((index, output))
 
         if eval:
-            evaluate_model(output_dir, name, groundtruths, preds) # Optional: add metrics specifier argument
+            evaluate_model(output_dir, name, groundtruths, preds)
 
 
 if __name__ == '__main__':
