@@ -117,7 +117,7 @@ Table 3. Socratic Model Test Results:
 | BLIP + FlanT5-L (770M)     | 0.119      | 0.154   | 0.117 | 0.154 |
 | BLIP + FlanT5-XL (3B)     | 0.163      | 0.1745   | 0.124 | 0.175 |
 | CV2 + FlanT5-L (770M)     | 0.278      | 0.284   | 0.274 | 0.284 |
-| CV2 + FlanT5-XL (3B)     | 0.452      | 0.410   | 0.403 | 0.410 |
+| CV2 + FlanT5-XL (3B)     | 0.452     | 0.410   | 0.403 | 0.410 |
 </div>
 
 
@@ -160,7 +160,8 @@ Table 5. Results Summary:
 | Model | Accuracy          |
 |---------------|-------------------|
 | FlanT5-XL      | 0.78  |
-| CLIP + FlanT5-XL | 0.127   |
+| CLIP + FlanT5-XL | 0.183   |
+| BLIP + FlanT5-XL | 0.175   |
 | OpenFlamingo  |  0.11     |
 | **Baseline**              |
 | ResNET + DRT   |  0.58     |
