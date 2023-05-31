@@ -51,9 +51,9 @@ Table 1. Baseline for comparison
 
 | Model| accuracy   |
 |------|-------------|
-| ResNET +DRT   |  0.58     |
-| Human         |  0.95     |
-| Solver        |  1.00     |
+| ResNET + DRT   |  0.58     |
+| Human          |  0.95     |
+| Solver         |  1.00     |
 
 
 ## Methods and Results
