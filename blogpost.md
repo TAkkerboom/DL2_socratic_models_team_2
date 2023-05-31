@@ -149,8 +149,9 @@ Table 4. Results Summary:
 
 
 ### Future Work
-[TODO: DESCRIBE FUTURE WORK (prompt tuning, few-shot tests, different dataset, different models, finetuning)]
-The previous section showed that SMs did not perform well on solving RPM.
+The previous section highlighted that SMs struggled in solving RPM, while standalone LLMs exhibited promising outcomes. Consequently, it is crucial to address the challenges associated with error propagation and the absence of a shared embedding space within SMs in order to enhance the system's overall reliability and consistency. Research efforts could be directed towards developing methods that mitigate error propagation. This could involve introducing checks and safeguards at various stages of the pipeline to identify and rectify erroneous responses. Additionally, exploring techniques to establish a shared embedding space or enhancing the language understanding of models can facilitate coherent and consistent interactions within the SM framework.
+
+To further enhance the SM, we can consider incorporating an additional VLM step at the end. By prompting the language model to generate multiple answers, we can then employ zero-shot classification using CLIP to select the answer that aligns most logically with the visual context.
 
 ## References
 <a id="sm"></a> [[1]](https://arxiv.org/abs/2204.00598) Andy Zeng, Adrian Wong, Stefan Welker, Krzysztof Choromanski, Federico Tombari, Aveek Purohit, Michael S. Ryoo, Vikas Sindhwani, Johnny Lee, Vincent Vanhoucke, Pete Florence:
