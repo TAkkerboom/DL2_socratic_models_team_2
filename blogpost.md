@@ -13,7 +13,7 @@ The core concept of SMs is to harness what Zeng et al. (2022) call differences i
 
 ![image](https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png)
 
-Figure from [[1]](#sm): Differing and complementary commonsense knowledge learned by different foundation models.
+Figure 1. Source: [[1]](#sm). Differing and complementary commonsense knowledge learned by different foundation models of differing modalities.
 
 [TODO: ADD MORE INFORMATION]
 
@@ -58,9 +58,10 @@ Table 1. Baseline for comparison
 
 ## Methods and Results
 ### Experiment 1: Standalone Language Model
-To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles; shapes, colour, size and angle. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model, we choose FlanT5, because it is the largest open-source model, does not require an API key, and is trained on chain-of-thought. This means that it can, according to [[4]](#flant5), reason about logical problems quite well. Several sizes of the FlanT5 model were used. 
+To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles: *shapes, colour, size* and *angle*. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model FlanT5 was chosen, because it is the largest, freely available open-source model, it does not require an API key, and it is trained on chain-of-thought. This means that it can reason about logical problems quite well [[4]](#flant5). Several sizes of the FlanT5 model were used.
 
-As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit even on the LISA cluster. Additionally, we did not use the smaller FlanT5 models that are available, as the performance drop from XL to L suggests that using fewer parameters would not yield a desirable result.
+As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit on the LISA cluster. FlanT5's performance drop from XL to L suggests that using even fewer parameters would not yield worthwhile results. Informal testing on the base (220M) and small (60M) versions of FlanT5 showed exactly that, and thus they were not investigated further.
+
 
 Table 2. Standalone Language Model Test Results:
 
@@ -78,9 +79,9 @@ In the {}, the attributes of the individual figures (shape, colour, angle, size)
 ### Experiment 2: Socratic Model
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)
 
-Figure 3. SM pipeline using CLiP and BLiP as VLMs.
+Figure 3. SM pipeline using CLIP and BLIP as VLMs.
 
-With the Socratic Model we tested 2 VLMs: CLIP and BLIP and additionally a traditional OpenCV Computer Vision algorithm. These methods are used to get the visual understanding of the image, which is then passed to the LLM to solve the puzzle.
+With the Socratic Model we tested 2 VLMs: CLIP and BLIP. Additionally, a conventional OpenCV Computer Vision algorithm is tested. These methods are used to parse the attributes for each of the shapes present in the puzzle and describe them using language. This is then passed to the LM to solve the puzzle.
 
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
 
@@ -91,17 +92,18 @@ The OpenCV method obtains the shape of the image by extracting the corners of th
 
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
+The results of experiment 2 are shown in table 2.
 
 Table 2. Socratic Model Test Results:
 
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|----|
-| CLiP + FT5-L (TODO/770M)    | TODO      | TODO   | TODO | TODO |
-| CLiP + FT5-XL (TODO/3B)     | 0.208      | 0.118   | 0.138 | 0.118 |
-| BLiP + FT5-L (TODO/770M)     | TODO      | TODO   | TODO | TODO |
-| BLiP + FT5-XL (TODO/3B)     | TODO      | TODO   | TODO | TODO |
-| CV2 + FT5-L (-/770M)     | 0.150      | 0.136   | 0.140 | 0.136 |
-| CV2 + FT5-XL (-/3B)     | 0.152      | 0.129   | 0.136 | 0.129 |
+| CLIP + FT5-L (TODO/770M)    | TODO      | TODO   | TODO | TODO |
+| CLIP + FT5-XL (TODO/3B)     | 0.127     | 0.118   | 0.097 | 0.118 |
+| BLIP + FT5-L (TODO/770M)     | 0.136      | 0.127   | 0.107 | 0.127 |
+| BLIP + FT5-XL (TODO/3B)     | TODO      | TODO   | TODO | TODO |
+| CV2 + FT5-L (-/770M)     | 0.136      | 0.136   | 0.132 | 0.136 |
+| CV2 + FT5-XL (-/3B)     | 0.126      | 0.129   | 0.122 | 0.129 |
 
 
 
@@ -110,7 +112,7 @@ Table 2. Socratic Model Test Results:
 
 Figure 5. Schematic representation of OpenFlamingo [[3]](#flam).
 
-We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As Flamingo is not open source, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead. 
+We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As Flamingo is not open source, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead.
 
 OpenFlamingo, which uses LLama as its Language Model (LM) with 7B parameters and CLIP as a vision encoder, was expected to outperform the Socratic Model due to the higher parameter count in the LM and the similarity of the vision encoders used. Surprisingly, the opposite is true. OpenFlamingo exhibits significant difficulties in comprehending the problem, performing even worse than random guessing (1/8 or 0.125 accuracy).
 
@@ -124,7 +126,12 @@ Table 3. OpenFlamingo Test Results:
 |---------------------|-----------|--------|------|---|
 | VLM: OpenFlamingo (9B)       | 0.04      | 0.11   | 0.13 | 0.11 |
 
-## Conclusion
+
+## Discussion
+[TODO: SUMMARISE RESULTS AND INSIGHTS FROM RESEARCH]
+
+Table 4. TODO: Comparison of SM and OpenFlamingo accuracies to baselines.
+
 | Model | Accuracy          |
 |---------------|-------------------|
 | **Our method** |   |
@@ -135,6 +142,9 @@ Table 3. OpenFlamingo Test Results:
 | Human         |  0.95     |
 | Solver        |  1.00     |
 
+
+### Future Work
+[TODO: DESCRIBE FUTURE WORK (prompt tuning, few-shot tests, different dataset, different models, finetuning)]
 
 ## References
 <a id="sm"></a> [[1]](https://arxiv.org/abs/2204.00598) Andy Zeng, Adrian Wong, Stefan Welker, Krzysztof Choromanski, Federico Tombari, Aveek Purohit, Michael S. Ryoo, Vikas Sindhwani, Johnny Lee, Vincent Vanhoucke, Pete Florence:
