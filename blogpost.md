@@ -74,7 +74,7 @@ In the {}, the attributes of the shapes are explained.
 With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. 
 
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
-<br> Figure 4. The OpenCV method explained.
+<br> Figure 4. The OpenCV method explained. [[5]]("OpenCV")
 <br><br>
 
 The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection[[5]](#OpenCV). Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
