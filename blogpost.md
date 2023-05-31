@@ -161,7 +161,7 @@ To further enhance the SM, we can consider incorporating an additional VLM step 
 
 It is possible, if not likely, that the SM's poor performance in our experiments was at least partly as a result of the SM not fully understanding what an RPM was, and thus what it was being asked to solve. Few-shot learning has been shown to improve LM performance on a variety of tasks, without the need for gradient updates or finetuning [[8]](#lm_fsl), and might thus provide the SM with a few precious examples to help it along.
 
-Additionally, further research could explore prompt tuning. Due to time restrictions, only a few, hand-selected prompts were experimented with on a small scale. The most promising of which was kept and used for all further experiments. Liu et al. (2022) [[9]](#p-tune) have shown that effective prompt tuning has the potential to bring the same performance benefits as finetuning, without the cost associated with finetuning. This falls inline with SMs goals of accessibility, both computationally and knowledge-wise.
+Additionally, further research could explore prompt tuning. Due to time restrictions, only a few, hand-selected prompts were experimented with on a small scale. The most promising of which was kept and used for all further experiments. Liu et al. (2022) [\[9](#p-tune), [11\]](#param-ef_pt) have shown that effective prompt tuning has the potential to bring the same performance benefits as finetuning, without the cost associated with finetuning. This falls inline with SMs goals of accessibility, both computationally and knowledge-wise.
 
 Lastly, the assessment of SMs can be broadened by incorporating a wider range of benchmarks that are more comprehensive and diverse. Although the current research project primarily concentrated on Raven Progressive Matrices as the main testing ground, future research could encompass the evaluation of SMs using other logical puzzle datasets or exploring real-world applications that demand visual-language reasoning. An example of such a benchmark could be the inclusion of visual questions derived from driving theory exams. This particular domain presents an ideal opportunity for testing SMs as it combines both logical and visual reasoning elements.
 
@@ -190,10 +190,13 @@ Lastly, the assessment of SMs can be broadened by incorporating a wider range of
 **The OpenCV library** *Dr. Dobb's Journal of Software Tools* (2022)
 
 <a id="lm_fsl"></a> [[8]](https://proceedings.neurips.cc/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf) Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel M. Ziegler, Jeffrey Wu, Clemens Winter, Christopher Hesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess, Jack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever, Dario Amodei:
-**Language Models are Few-Shot Learners** *Advances in neural information processing systems, 33, 1877-1901*
+**Language Models are Few-Shot Learners** *Advances in neural information processing systems, 33, 1877-1901* (2020)
 
 <a id="p-tune"></a> [[9]](https://aclanthology.org/2022.acl-short.8.pdf) Xiao Liu, Kaixuan Ji, Yicheng Fu, Weng Tam, Zhengxiao Du, Zhilin Yang, Jie Tang:
-**P-Tuning: Prompt Tuning Can Be Comparable to Fine-tuning Across Scales and Tasks** *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) (pp. 61-68)*
+**P-Tuning: Prompt Tuning Can Be Comparable to Fine-tuning Across Scales and Tasks** *Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) (pp. 61-68)* (2022)
 
 <a id="emergent"></a> [[10]](https://arxiv.org/pdf/2206.07682) Jason Wei, Yi Tay, Rishi Bommasani, Colin Raffel, Barret Zoph, Sebastian Borgeaud, Dani Yogatama, Maarten Bosma, Denny Zhou, Donald Metzler, Ed H. Chi, Tatsunori Hashimoto, Oriol Vinyals, Percy Liang, Jeff Dean, William Fedus:
-**Emergent Abilities of Large Language Models** *arXiv preprint arXiv:2206.07682*
+**Emergent Abilities of Large Language Models** *arXiv preprint arXiv:2206.07682* (2022)
+
+<a id="param-ef_pt"></a> [[11]](https://arxiv.org/pdf/2104.08691) Brian Lester, Rami Al-Rfou, Noah Constant:
+**The Power of Scale for Parameter-Efficient Prompt Tuning** *EMNLP (1) 2021: 3045-3059* (2021)
