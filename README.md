@@ -15,7 +15,18 @@ conda activate socrat
 3. Run the main file:
 ```
 python main.py
+
+--name NAME                   How to name the results.
+--seed SEED                   Seed to use for reproducing results.
+--data_dir DATA_DIR           Data directory where to find dataset.
+--split SPLIT                 Data split to use.
+--type TYPE                   Puzzle type to use.
+--ClassicOpenCV CLASSICOPENCV Use OpenCV or not
+--vlm VLM                     VLM weights to use.
+--lm LM                       LM weights to use.
 ```
+
+
 # Structure
 ```
 .
