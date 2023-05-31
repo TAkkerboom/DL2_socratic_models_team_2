@@ -135,7 +135,7 @@ Table 3. OpenFlamingo Test Results:
 ## Discussion
 [TODO: SUMMARISE RESULTS AND INSIGHTS FROM RESEARCH]
 
-Table 4. TODO: Comparison of SM and OpenFlamingo accuracies to baselines.
+Table 4. Results Summary:
 
 | Model | Accuracy          |
 |---------------|-------------------|
