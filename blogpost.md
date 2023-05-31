@@ -10,9 +10,9 @@ This research project aims to investigate the ability of a SM pipeline to solve 
 ## Socratic Models
 ### Background
 The core concept of SMs is to harness what Zeng et al. (2022) call differences in common sense knowledge. Visual Language Models (VLMs), for example, are trained on image captions, and thus develop understanding of the connection between images and language. Language Models (LMs) are trained on additional corpora that do not need to possess a visual aspect, such as novels or recipes. As such, they are applicable to a wide variety of linguistic tasks. By using SMs, we can harness these complementary differences in knowledge and apply them to both existing and new tasks out-of-the-box.
-
-![image](https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png)
-
+<p align="center">
+<img src="https://gyazo.com/8d2f8d1a893ed836f6c9dc12ef927753.png"/>
+</p>
 Figure 1. Source: [[1]](#sm). Differing and complementary commonsense knowledge learned by different foundation models of differing modalities.
 
 Furthermore, SMs are designed to facilitate human-like reasoning and interpretation. They aim to emulate the Socratic method, a philosophical approach that involves asking probing questions to stimulate critical thinking and uncover deeper insights. SMs employ similar techniques by generating questions, seeking clarifications, and engaging in interactive dialogue with users. This approach enhances the model's ability to understand complex concepts, handle ambiguity, and provide more nuanced responses.
@@ -39,14 +39,16 @@ Furthermore, we explore traditional Computer Vision methods to extract the shape
 
 ### Raven Progressive Matrices
 For all experiments, the pipeline is tested on the Center Single subset of the Raven Progressive Matrices dataset by Zhang et al. (2019) [[2]](#raven). An RPM consists of a three-by-three grid of items, with the final item missing. There are eight potential solutions of which the model must pick the missing shape to finish the pattern. An example is shown in Figure 2 below. This study aims to provide a proof-of-concept for solving logical puzzles such as RPMs with SMs and thus sticks to the Centre Single subset to avoid logistic difficulties. Each item contains a single shape (triangle, square, circle, hexagon, or pentagon). The correct answer is identified by the shape itself and its additional attributes, namely size, colour, and angle. The Centre Single subset for testing contains 2000 puzzles. Additional subsets exist, namely with multiple shapes and even overlapping shapes in each of the sections/answers, however, we do not tackle them in this research.
-
-<br>![image](https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png)
-
+<p align="center">
+<img src="https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png"/>
+</p>
 Figure 2. RPM Examples. The top 8 figures with the missing shape form a logical puzzles, where the missing shape should be filled with one of the 8 answers below. Only one answer can be correct at a time.
+
 
 ### Baselines
 The baseline we use to compare our pipeline is from the paper that originated the RPM dataset [[2]](#raven). In the paper, they used a Dynamically Residual Tree to solve the puzzles. The Dynamically Residual Tree is a tree traversal algorithm which solves the puzzle by going through the nodes. To get the visual encoding of the shapes, they used ResNET. After training, their algorithm was compared to human performance and a logical solver algorithm.
 
+<div align="center">
 Table 1. Baseline for comparison
 
 | Model| accuracy   |
@@ -54,7 +56,7 @@ Table 1. Baseline for comparison
 | ResNET + DRT   |  0.58     |
 | Human          |  0.95     |
 | Solver         |  1.00     |
-
+</div>
 
 ## Methods and Results
 ### Experiment 1: Standalone Language Model
@@ -62,13 +64,14 @@ To look at the components of the SM individually, we first tested the LM on the 
 
 As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit on the LISA cluster. FlanT5's performance drop from XL to L suggests that using even fewer parameters would not yield worthwhile results. Informal testing on the base (220M) and small (60M) versions of FlanT5 showed exactly that, and thus they were not investigated further.
 
-
+<div align="center">
 Table 2. Standalone Language Model Test Results:
 
 | Model (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|---|
 | LM: FlanT5-L (770M)    | 0.46      | 0.45   | 0.44 | 0.45 |
 | LM: FlanT5-XL (3B)     | 0.81      | 0.78   | 0.78 | 0.78 |
+</div>
 
 The following prompt was used to solve the puzzles:
 
@@ -79,8 +82,9 @@ In the {}, the attributes of the individual figures (shape, colour, angle, size)
 ### Experiment 2: Socratic Model
 In this experiment, we used three different architechtures, each incorporating a unique visual module. The initial two architectures employed VLMs, namely CLIP and BLIP, while the third one relied on traditional OpenCV methods. For a visual depiction of the pipeline, please consult Figure 3.
 
-![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)
-
+<p align="center">
+<img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b"/>
+</p>
 Figure 3. The proposed pipeline starts by taking a puzzle and annotating its attributes using a visual module. These attributes are then combined to form a prompt, which is passed down to the language model. Finally, the language model generates the final answer.
 
 CLIP (Contrastive Language-Image Pretraining) is a state-of-the-art Visual-Linguistic Model (VLM) designed for zero-shot classification [[5]](#CLIP). It achieves this by training on a large dataset of image-text pairs, enabling it to understand and relate images and their corresponding textual descriptions. By leveraging this pretraining, CLIP can generalize to classify images even without specific training on the target classes, making it a powerful tool for zero-shot classification tasks.
@@ -90,8 +94,9 @@ For our implementation, we used the ViT-B/32 Transformer architecture from Huggi
 We also use a model called BLIP (Bootstrapping Language-Image Pre-training) [[6]](#BLIP). By incorporating both visual and textual data, BLIP allows the model to acquire comprehensive representations that effectively capture the semantic connections between images and their accompanying textual descriptions. As a result, this enhances the model's performance in various tasks like image captioning and visual question answering.
 
 We used BLIP Visual Question Answering model trained with ViT base backbone in our implementation. This model is readily available via Huggingface's Transformers library and was contributed by Salesforce. In our pipeline, we input the puzzle and prompt the model to generate a description of its attributes. Unlike CLIP, BLIP is a generative model, which means its output is not limited to specific values. Important to note that this characteristic can introduce ambiguity in the overall pipeline.
-
+<p align="center">
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
+</p>
 
 Figure 4. The OpenCV method explained.
 
@@ -99,6 +104,7 @@ The OpenCV method obtains the shape of the image by extracting the corners of th
 
 The results of all three architechtures are available in Table 2.
 
+<div align="center">
 Table 2. Socratic Model Test Results:
 
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
@@ -109,12 +115,13 @@ Table 2. Socratic Model Test Results:
 | BLIP + FlanT5-XL (3B)     | TODO      | TODO   | TODO | TODO |
 | CV2 + FlanT5-L (770M)     | 0.136      | 0.136   | 0.132 | 0.136 |
 | CV2 + FlanT5-XL (3B)     | 0.126      | 0.129   | 0.122 | 0.129 |
-
+</div>
 
 
 ### Experiment 3: OpenFlamingo
-![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc)
-
+<p align="center">
+<img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/645e0197-5211-42bd-80d6-cdbbf5b9c7cc"/>
+</p>
 Figure 5. Schematic representation of OpenFlamingo [[3]](#flam).
 
 We also compare the Socratic Model to Flamingo [[3]](#flam), a multi-modal VLM for few-shot learning. It uses gates to constrain the LM with the encoded vision input, which is the RPM in this case. As Flamingo is not open source, [OpenFlamingo](https://github.com/mlfoundations/open_flamingo) was used instead.
@@ -125,11 +132,13 @@ It is important to note that OpenFlamingo's primary training focus lies on capti
 
 However, based on the findings from Experiment 1, it is evident that Flamingo, a unique architecture that combines a Vision encoder with a Large Language Model, has the potential to effectively solve the Raven dataset.
 
+<div align="center">
 Table 3. OpenFlamingo Test Results:
 
 | Model (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|---|
 | VLM: OpenFlamingo (9B)       | 0.04      | 0.11   | 0.13 | 0.11 |
+</div>
 
 
 ## Discussion
@@ -141,6 +150,7 @@ Further analysis is necessary to determine the exact causes of error propagation
 
 Despite inconclusive results, we believe that Socratic Models are a powerful tool, and the problems faced during this project could be resolved by re-arranging or improving the existing modules through better prompt design or exploring alternative approaches for visual question answering.
 
+<div align="center">
 Table 4. Results Summary:
 
 | Model | Accuracy          |
@@ -152,7 +162,7 @@ Table 4. Results Summary:
 | ResNET + DRT   |  0.58     |
 | Human         |  0.95     |
 | Solver        |  1.00     |
-
+</div>
 
 ### Future Work
 The previous section highlighted that SMs struggled in solving RPM, while standalone LLMs exhibited promising outcomes. Consequently, it is crucial to address the challenges associated with error propagation and the absence of a shared embedding space within SMs in order to enhance the system's overall reliability and consistency. Research efforts could be directed towards developing methods that mitigate error propagation. This could involve introducing checks and safeguards at various stages of the pipeline to identify and rectify erroneous responses. Additionally, exploring techniques to establish a shared embedding space or enhancing the language understanding of models can facilitate coherent and consistent interactions within the SM framework.
