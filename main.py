@@ -228,16 +228,16 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     
     # Download the RAVEN dataset
-    # output = f"{data_dir}RAVEN10000.zip"
-    # if not exists(output):
-    #     gdown.download(URL, output, quiet=False, fuzzy=True)
-    #     # Unzip the archive
-    #     with zipfile.ZipFile(output, "r") as zip_ref:
-    #         print('unpacking...')
-    #         zip_ref.extractall(data_dir)
-    #         print('unpacking done')
-    # else:
-    #     print('Dataset already exists, moving further...')
+    output = f"{data_dir}RAVEN10000.zip"
+    if not exists(output):
+        gdown.download(URL, output, quiet=False, fuzzy=True)
+        # Unzip the archive
+        with zipfile.ZipFile(output, "r") as zip_ref:
+            print('unpacking...')
+            zip_ref.extractall(data_dir)
+            print('unpacking done')
+    else:
+        print('Dataset already exists, moving further...')
         
     # Load the data
     test_set = Raven(f'{data_dir}RAVEN-10000/', split, type)
@@ -248,7 +248,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     model.load_VLM(vlm)
     model.load_LM(lm)
     
-    with open(f'/home/theodoorakkerboom/Documents/UvA_clone/DL2_socratic_models_team_2/output/{name}_results.txt', 'w') as file:
+    with open(f'./output/{name}_results.txt', 'w') as file:
         # Inference
         for i in tqdm(range(1)):
             if not ClassicOpenCV:
@@ -267,7 +267,7 @@ if __name__ == '__main__':
                         help='How to name the results')
     parser.add_argument('--seed', default=42, type=int,
                         help='Seed to use for reproducing results')
-    parser.add_argument('--data_dir', default='/home/theodoorakkerboom/Documents/UvA_clone/', type=str,
+    parser.add_argument('--data_dir', default='./Data', type=str,
                         help='Data directory where to find dataset.')
     parser.add_argument('--split', default='test', type=str,
                         help='Data split to use.')
