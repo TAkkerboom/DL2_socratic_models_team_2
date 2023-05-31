@@ -57,7 +57,7 @@ Table 2. Experiment 1
 | LM: FT5-XL (3B)     | 0.81      | 0.78   | 0.78 |
 
 ### Experiment 2 The Socratic Model
-With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. 
+With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with Edge Detection. Then the amount of vertices can be invered from the amount of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square etc. The color is detected by getting the RGB values of the center of the shape. The size is obtained by comparing the size of the shape to the overall size of the square of the puzzle.
 
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
 
