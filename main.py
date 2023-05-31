@@ -211,16 +211,16 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     
     # Download the RAVEN dataset
-    output = f"{data_dir}RAVEN10000.zip"
-    if not exists(output):
-        gdown.download(URL, output, quiet=False, fuzzy=True)
-        # Unzip the archive
-        with zipfile.ZipFile(output, "r") as zip_ref:
-            print('unpacking...')
-            zip_ref.extractall(data_dir)
-            print('unpacking done')
-    else:
-        print('Dataset already exists, moving further...')
+    # output = f"{data_dir}RAVEN10000.zip"
+    # if not exists(output):
+    #     gdown.download(URL, output, quiet=False, fuzzy=True)
+    #     # Unzip the archive
+    #     with zipfile.ZipFile(output, "r") as zip_ref:
+    #         print('unpacking...')
+    #         zip_ref.extractall(data_dir)
+    #         print('unpacking done')
+    # else:
+    #     print('Dataset already exists, moving further...')
         
     # Load the data
     test_set = Raven(f'{data_dir}RAVEN-10000/', split, type)
@@ -231,7 +231,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     model.load_VLM(vlm)
     model.load_LM(lm)
     
-    with open(f'./output/{name}_results.txt', 'w') as file:
+    with open(f'/home/theodoorakkerboom/Documents/UvA_clone/DL2_socratic_models_team_2/output/{name}_results.txt', 'w') as file:
         # Inference
         for i in tqdm(range(test_set.len())):
             if not ClassicOpenCV:
@@ -246,11 +246,11 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--name', default='experiment1', type=str,
+    parser.add_argument('--name', default='experiment1_BLIP_xl', type=str,
                         help='How to name the results')
     parser.add_argument('--seed', default=42, type=int,
                         help='Seed to use for reproducing results')
-    parser.add_argument('--data_dir', default='data/', type=str,
+    parser.add_argument('--data_dir', default='/home/theodoorakkerboom/Documents/UvA_clone/', type=str,
                         help='Data directory where to find dataset.')
     parser.add_argument('--split', default='test', type=str,
                         help='Data split to use.')
@@ -258,9 +258,9 @@ if __name__ == '__main__':
                         help='Puzzle type to use.')
     parser.add_argument('--ClassicOpenCV', default=False, type=bool,
                         help='Use OpenCV or not')
-    parser.add_argument('--vlm', default='openai/clip-vit-base-patch32', type=str,
+    parser.add_argument('--vlm', default='Salesforce/blip-vqa-base', type=str,
                         help='VLM weights to use.')
-    parser.add_argument('--lm', default='google/flan-t5-small', type=str,
+    parser.add_argument('--lm', default='google/flan-t5-xl', type=str,
                         help='LM weights to use.')
     
     args = parser.parse_args()
