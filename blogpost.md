@@ -58,7 +58,8 @@ Table 2. Experiment 1
 
 ### Experiment 2 The Socratic Model
 With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle. 
-![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/a2f98ac5-a13c-4349-be16-dda4ee6bc6b4)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
+
+![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
 
