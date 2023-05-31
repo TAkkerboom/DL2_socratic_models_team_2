@@ -153,6 +153,8 @@ The previous section highlighted that SMs struggled in solving RPM, while standa
 
 To further enhance the SM, we can consider incorporating an additional VLM step at the end. By prompting the language model to generate multiple answers, we can then employ zero-shot classification using CLIP to select the answer that aligns most logically with the visual context.
 
+Lastly, the assessment of SMs can be broadened by incorporating a wider range of benchmarks that are more comprehensive and diverse. Although the current research project primarily concentrated on Raven Progressive Matrices as the main testing ground, future research could encompass the evaluation of SMs using other logical puzzle datasets or exploring real-world applications that demand visual-language reasoning. An example of such a benchmark could be the inclusion of visual questions derived from driving theory exams. This particular domain presents an ideal opportunity for testing SMs as it combines both logical and visual reasoning elements.
+
 ## References
 <a id="sm"></a> [[1]](https://arxiv.org/abs/2204.00598) Andy Zeng, Adrian Wong, Stefan Welker, Krzysztof Choromanski, Federico Tombari, Aveek Purohit, Michael S. Ryoo, Vikas Sindhwani, Johnny Lee, Vincent Vanhoucke, Pete Florence:
 **Socratic Models: Composing Zero-Shot Multimodal Reasoning with Language.** *arXiv preprint CoRR abs/2204.00598* (2022)
