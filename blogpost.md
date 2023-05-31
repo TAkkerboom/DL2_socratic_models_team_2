@@ -105,10 +105,10 @@ Figure 4. The OpenCV method explained.
 
 The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[7]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle. The angle is set to an arbitrary value, in our case to 0.
 
-The results of all three architechtures are available in Table 2.
+The results of all three architechtures are available in Table 3.
 
 <div align="center">
-Table 2. Socratic Model Test Results:
+Table 3. Socratic Model Test Results:
 
 | SM (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|----|
@@ -137,7 +137,7 @@ It is important to note that OpenFlamingo's primary training focus lies on capti
 However, based on the findings from Experiment 1, it is evident that Flamingo, a unique architecture that combines a Vision encoder with a Large Language Model, has the potential to effectively solve the Raven dataset.
 
 <div align="center">
-Table 3. OpenFlamingo Test Results:
+Table 4. OpenFlamingo Test Results:
 
 | Model (num. params) | Precision | Recall | F1   | Accuracy |
 |---------------------|-----------|--------|------|---|
@@ -155,7 +155,7 @@ Further analysis is necessary to determine the exact causes of error propagation
 Despite inconclusive results, we believe that Socratic Models are a powerful tool, and the problems faced during this project could be resolved by re-arranging or improving the existing modules through better prompt design or exploring alternative approaches for visual question answering.
 
 <div align="center">
-Table 4. Results Summary:
+Table 5. Results Summary:
 
 | Model | Accuracy          |
 |---------------|-------------------|
