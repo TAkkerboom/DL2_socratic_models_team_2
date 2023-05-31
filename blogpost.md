@@ -33,12 +33,12 @@ Another potential challenge lies in the lack of a shared embedding space among t
 ## Contribution
 In this research, we investigate the logical reasoning capabilities of Socratic Models. To achieve this, we use Raven's Progressive Matrices puzzles, which will be elaborated on later in the report. The main objective of the experiments is to evaluate the general reasoning abilities of the Socratic Models within the proposed pipeline and compare its performance against baselines, such as the standalone language model and Google DeepMind's Flamingo.
 
-Our proposed work aims to construct a pipeline for the SM framework, incorporating state-of-the-art Visual Language Models (VLMs) and Language Models (LMs) namely Clip, Blip, and FlanT5, which are open source models. In total, we conduct three experiments: the first one focuses on the language model alone, the second one evaluates the combination of the language model with a visual language model, and the third one evaluates Flamingo, an integration of both models. 
+Our proposed work aims to construct a pipeline for the SM framework, incorporating state-of-the-art Visual Language Models (VLMs) and Language Models (LMs) namely Clip, Blip, and FlanT5, which are open source models. In total, we conduct three experiments: the first one focuses on the language model alone, the second one evaluates the combination of the language model with a visual language model, and the third one evaluates Flamingo, an integration of both models.
 
 Furthermore, we explore traditional Computer Vision methods to extract the shapes from the Raven Progressive Matrices. The selection of specific models is based on rigorous performance tests. To assess the effectiveness of this pipeline, a comprehensive evaluation is conducted, which includes both quantitative and qualitative analyses. The quantitative results are compared against established baselines.
 
 ### Raven Progressive Matrices
-For all experiments, the pipeline is tested on the Center Single subset of the Raven Progressive Matrices dataset by Zhang et al. (2019) [[2]](#raven). An RPM consists of a three-by-three grid of items, with the final item missing. There are eight potential solutions of which the model must pick the missing shape to finish the pattern. An example is shown in Figure 2 below. This study aims to provide a proof-of-concept for solving logical puzzles such as RPMs with SMs and thus sticks to the Centre Single subset to avoid logistic difficulties. Each item contains a single shape (triangle, square, circle, hexagon, or pentagon). The correct answer is identified by the shape itself and its additional attributes, namely size, colour, and angle. The Centre Single subset for testing contains 2000 puzzles. Additional subsets exist, namely with multiple shapes and even overlapping shapes in each of the sections/answers, however, we do not tackle them in this research. 
+For all experiments, the pipeline is tested on the Center Single subset of the Raven Progressive Matrices dataset by Zhang et al. (2019) [[2]](#raven). An RPM consists of a three-by-three grid of items, with the final item missing. There are eight potential solutions of which the model must pick the missing shape to finish the pattern. An example is shown in Figure 2 below. This study aims to provide a proof-of-concept for solving logical puzzles such as RPMs with SMs and thus sticks to the Centre Single subset to avoid logistic difficulties. Each item contains a single shape (triangle, square, circle, hexagon, or pentagon). The correct answer is identified by the shape itself and its additional attributes, namely size, colour, and angle. The Centre Single subset for testing contains 2000 puzzles. Additional subsets exist, namely with multiple shapes and even overlapping shapes in each of the sections/answers, however, we do not tackle them in this research.
 
 <br>![image](https://gyazo.com/c6d0bcea47b740917a436c0f8ab3411c.png)
 
@@ -150,6 +150,7 @@ Table 4. TODO: Comparison of SM and OpenFlamingo accuracies to baselines.
 
 ### Future Work
 [TODO: DESCRIBE FUTURE WORK (prompt tuning, few-shot tests, different dataset, different models, finetuning)]
+The previous section showed that SMs did not perform well on solving RPM.
 
 ## References
 <a id="sm"></a> [[1]](https://arxiv.org/abs/2204.00598) Andy Zeng, Adrian Wong, Stefan Welker, Krzysztof Choromanski, Federico Tombari, Aveek Purohit, Michael S. Ryoo, Vikas Sindhwani, Johnny Lee, Vincent Vanhoucke, Pete Florence:

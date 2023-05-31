@@ -299,7 +299,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm, eval=True):
 
     with open(output_dir + f'{name}_results.txt', 'w') as file:
         # Inference
-        for i in tqdm(range(1)):
+        for i in tqdm(range(test_set.len())):
             if not ClassicOpenCV:
                 puzzle = test_set.get_puzzle(i)
             else:
