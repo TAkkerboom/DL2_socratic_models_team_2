@@ -15,9 +15,9 @@ The core concept of SMs is to harness what Zeng et al. (2022) call differences i
 
 Figure 1. Source: [[1]](#sm). Differing and complementary commonsense knowledge learned by different foundation models of differing modalities.
 
-[TODO: ADD MORE INFORMATION]
+Furthermore, SMs are designed to facilitate human-like reasoning and interpretation. They aim to emulate the Socratic method, a philosophical approach that involves asking probing questions to stimulate critical thinking and uncover deeper insights. SMs employ similar techniques by generating questions, seeking clarifications, and engaging in interactive dialogue with users. This approach enhances the model's ability to understand complex concepts, handle ambiguity, and provide more nuanced responses.
 
-[TODO: ADD FOLLOWUP RESEARCH TO SHOW STATE OF SM RESEARCH]
+Overall, Socratic Models combine the complementary knowledge of VLMs and LMs with the power of Socratic questioning to generate more insightful and reasoned responses. By fostering critical thinking and adaptability, SMs have the potential to revolutionize various domains, from education and research to decision-making and problem-solving in a diverse range of applications.
 
 ### Strengths and Weaknesses
 The idea behind Socratic Models is to chain existing models as is, without any training or fine-tuning. This eliminates the need for additional compute resources and time-consuming training processes. By leveraging pre-trained models, Socratic Models can quickly provide intelligent and context-aware responses. This approach also ensures that the system remains up-to-date with the latest information and developments, as it operates based on existing state-of-the-art. In addition, as the state of the art advances, modules can be quickly swapped. The absence of training requirements allows for effortless integration and implementation of Socratic Models across various applications and platforms, making it a versatile and efficient solution for natural language understanding and generation tasks.
