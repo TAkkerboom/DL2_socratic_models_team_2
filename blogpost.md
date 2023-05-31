@@ -79,7 +79,7 @@ In the {}, the attributes of the individual figures (shape, colour, angle, size)
 ### Experiment 2: Socratic Model
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)
 
-Figure 3. SM pipeline using CLIP and BLIP as VLMs.
+Figure 3. The proposed pipeline starts by taking a puzzle and annotating its attributes using a visual module. These attributes are then combined to form a prompt, which is passed down to the language model. Finally, the language model generates the final answer.
 
 With the Socratic Model we tested 2 VLMs: CLIP and BLIP. Additionally, a conventional OpenCV Computer Vision algorithm is tested. These methods are used to parse the attributes for each of the shapes present in the puzzle and describe them using language. This is then passed to the LM to solve the puzzle.
 
