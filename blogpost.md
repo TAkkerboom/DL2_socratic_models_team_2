@@ -133,9 +133,13 @@ Table 3. OpenFlamingo Test Results:
 
 
 ## Discussion
-This research project aimed to explore the effectiveness of Socratic Models in solving logical puzzles presented as images with Raven Progressive Matrices. SMs have several advantages, including their ability to utilize pre-trained models, facilitate human-like reasoning, and enable multimodal understanding. However, there are also challenges associated with SMs, such as error propagation and the absence of a shared embedding space among the constituent models.
+This research project aimed to investigate the effectiveness of Socratic Models in solving logical puzzles presented as images using Raven Progressive Matrices. SMs have several advantages, including the use of pre-trained models, human-like reasoning, and multimodal understanding. However, there are challenges associated with SMs, such as error propagation and the lack of a shared embedding space among the constituent models.
 
-The findings reveal that the standalone Language Model (LM) performs quite well, with FlanT5-XL achieving an accuracy of 0.78. However, when used in a combination with a VLM, the performance dropped significantly
+The findings of this study indicate that the standalone Language Model (LM) performs well, with FlanT5-XL achieving an accuracy of 0.78. However, when combined with a Visual Language Model (VLM), the system's performance experienced a significant drop. This decrease in performance can be attributed to error propagation between the visual module and the output module.
+
+Further analysis is necessary to determine the exact causes of error propagation and explore potential strategies to mitigate this issue. It is crucial to investigate methods that improve the integration between the visual and language components within Socratic Models.
+
+Despite inconclusive results, we believe that Socratic Models are a powerful tool, and the problems faced during this project could be resolved by re-arranging or improving the existing modules through better prompt design or exploring alternative approaches for visual question answering.
 
 Table 4. Results Summary:
 
