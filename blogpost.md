@@ -83,14 +83,14 @@ In this experiment, we used three different architectures, each incorporating a 
 
 Figure 3. The proposed pipeline starts by taking a puzzle and annotating its attributes using a visual module. These attributes are then combined to form a prompt, which is passed down to the language model. Finally, the language model generates the final answer.
 
-With the Socratic Model we tested 2 VLMs: CLIP and BLIP. Additionally, a conventional OpenCV Computer Vision algorithm is tested. These methods are used to parse the attributes for each of the shapes present in the puzzle and describe them using language. This is then passed to the LM to solve the puzzle.
+CLIP (Contrastive Language-Image Pretraining) is a state-of-the-art Visual-Linguistic Model (VLM) designed for zero-shot classification [[5]](#CLIP). It achieves this by training on a large dataset of image-text pairs, enabling it to understand and relate images and their corresponding textual descriptions. By leveraging this pretraining, CLIP can generalize to classify images even without specific training on the target classes, making it a powerful tool for zero-shot classification tasks.
 
 <img src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" data-canonical-src="https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/e2c444d8-688d-4657-a534-2b71e46b27db" width="60%" height="60%" />
 
 Figure 4. The OpenCV method explained.
 <br><br>
 
-The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[5]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle.
+The OpenCV method obtains the shape of the image by extracting the corners of the puzzle shape with edge detection [[6]](#OpenCV). Then the number of vertices can be drawn from the number of corners, which results in a name for a shape. If the amount of vertices is 4, it is a square, etc. The colour is detected by getting the RGB values of the centre of the shape. The size is obtained by comparing the size of the shape with the overall size of the square of the puzzle.
 
 
 [TODO: FILL IN AND DISCUSS RESULTS OF TABLE 2]
@@ -161,5 +161,8 @@ Table 4. TODO: Comparison of SM and OpenFlamingo accuracies to baselines.
 <a id="flant5"></a> [[4]](https://arxiv.org/abs/2210.11416) Hyung Won Chung, Le Hou, Shayne Longpre, Barret Zoph, Yi Tay, William Fedus, Yunxuan Li, Xuezhi Wang, Mostafa Dehghani, Siddhartha Brahma, Albert Webson, Shixiang Shane Gu, Zhuyun Dai, Mirac Suzgun, Xinyun Chen, Aakanksha Chowdhery, Alex Castro-Ros, Marie Pellat, Kevin Robinson, Dasha Valter, Sharan Narang, Gaurav Mishra, Adams Yu, Vincent Zhao, Yanping Huang, Andrew Dai, Hongkun Yu, Slav Petrov, Ed H. Chi, Jeff Dean, Jacob Devlin, Adam Roberts, Denny Zhou, Quoc V. Le, Jason Wei:
 **Scaling Instruction-Finetuned Language Models** *arXiv preprint arXiv:2210.11416* (2022)
 
-<a id="OpenCV"></a> [[5]](http://roswiki.autolabor.com.cn/attachments/Events(2f)ICRA2010Tutorial/ICRA_2010_OpenCV_Tutorial.pdf) Bradski, G.:
+<a id="CLIP"></a> [[5]](https://arxiv.org/abs/2103.00020) Radford, Alec and Kim, Jong Wook and Hallacy, Chris and Ramesh, Aditya and Goh, Gabriel and Agarwal, Sandhini and Sastry, Girish and Askell, Amanda and Mishkin, Pamela and Clark, Jack and others:
+**Learning transferable visual models from natural language supervision** *arXiv preprint arXiv:2103.00020* (2021)
+
+<a id="OpenCV"></a> [[6]](http://roswiki.autolabor.com.cn/attachments/Events(2f)ICRA2010Tutorial/ICRA_2010_OpenCV_Tutorial.pdf) Bradski, G.:
 **The OpenCV library** *Dr. Dobb's Journal of Software Tools* (2022)
