@@ -77,6 +77,8 @@ The following prompt was used to solve the puzzles:
 In the {}, the attributes of the individual figures (shape, colour, angle, size) are explained.
 
 ### Experiment 2: Socratic Model
+In this experiment, we used three different architectures, each incorporating a unique visual module. The initial two architectures employed VLMs, namely CLIP and BLIP, while the third one relied on traditional OpenCV methods. For a visual depiction of the pipeline, please consult Figure 3.
+
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)
 
 Figure 3. The proposed pipeline starts by taking a puzzle and annotating its attributes using a visual module. These attributes are then combined to form a prompt, which is passed down to the language model. Finally, the language model generates the final answer.
