@@ -9,8 +9,8 @@ from .const import COLORS
 class VLM:
     def __init__(self, model_name="Salesforce/blip-vqa-base", device="cpu"):
         self.device = device
-        self.processor = CLIPProcessor.from_pretrained(model_name)
-        self.model = CLIPModel.from_pretrained(model_name)
+        self.processor = BlipProcessor.from_pretrained(model_name)
+        self.model = BlipForQuestionAnswering.from_pretrained(model_name)
         self.model.to(device)
         
     def forward(self, image, prompt):
@@ -22,7 +22,13 @@ class VLM:
         return out
 
 
-class CLIP(VLM):
+class CLIP:
+    def __init__(self, model_name="Salesforce/blip-vqa-base", device="cpu"):
+        self.device = device
+        self.processor = CLIPProcessor.from_pretrained(model_name)
+        self.model = CLIPModel.from_pretrained(model_name)
+        self.model.to(device)
+        
     def forward(self, image, prompt):
         with torch.no_grad():
             inputs = self.processor(text=prompt, images=image, return_tensors="pt", padding=True).to(self.device)

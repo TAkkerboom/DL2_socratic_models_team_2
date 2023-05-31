@@ -103,13 +103,24 @@ class Demo:
 
     def load_VLM(self, model):
         print(f'loading {model}...')
-        self.VLM = CLIP(model, self.device)
         
-        # Templates for predictions
-        self.template_type = ['The figure is shaped as a {}'.format(value) for value in SHAPES.values()]
-        self.template_color = ['The color of the figure is {}'.format(value) for value in COLORS.values()]
-        self.template_angle = ['The figure is rotated by {} degrees'.format(value) for value in ANGLES.values()]
-        self.template_sizes = ['The percentage of the image covered by the figure is {}'.format(value) for value in SIZES.values()]
+        if model == 'openai/clip-vit-base-patch32':
+            self.VLM = CLIP(model, self.device)
+            
+            # Templates for predictions
+            self.template_type = ['The figure is shaped as a {}'.format(value) for value in SHAPES.values()]
+            self.template_color = ['The color of the figure is {}'.format(value) for value in COLORS.values()]
+            self.template_angle = ['The figure is rotated by {} degrees'.format(value) for value in ANGLES.values()]
+            self.template_sizes = ['The percentage of the image covered by the figure is {}'.format(value) for value in SIZES.values()]
+        
+        else:
+            self.VLM = VLM(model, self.device)
+            
+            # Templates for predictions
+            self.template_type = 'What is the shape of the figure?'
+            self.template_color = 'What is the color of the figure?'
+            self.template_angle = 'At what angle is the figure located?'
+            self.template_sizes = 'What is the size of the figure?'
         
         print('VLM is ready to use')
         
@@ -123,11 +134,17 @@ class Demo:
         answers = []
                 
         for c_image in puzzle:
-            angle = (self.VLM.forward(c_image, self.template_angle)).split()[-2]
-            color = (self.VLM.forward(c_image, self.template_color)).split()[-1]
-            size = (self.VLM.forward(c_image, self.template_sizes)).split()[-1]
-            type = (self.VLM.forward(c_image, self.template_type)).split()[-1]
-            
+            if isinstance(self.template_angle, list):
+                angle = (self.VLM.forward(c_image, self.template_angle)).split()[-2]
+                color = (self.VLM.forward(c_image, self.template_color)).split()[-1]
+                size = (self.VLM.forward(c_image, self.template_sizes)).split()[-1]
+                type = (self.VLM.forward(c_image, self.template_type)).split()[-1]
+            else:
+                angle = self.VLM.forward(c_image, self.template_angle)
+                color = self.VLM.forward(c_image, self.template_color)
+                size = self.VLM.forward(c_image, self.template_sizes)
+                type = self.VLM.forward(c_image, self.template_type)
+                
             answers.append([angle, color, size, type])
             
         return answers
@@ -233,7 +250,7 @@ def main(name, seed, data_dir, split, type, ClassicOpenCV, vlm, lm):
     
     with open(f'./output/{name}_results.txt', 'w') as file:
         # Inference
-        for i in tqdm(range(test_set.len())):
+        for i in tqdm(range(1)):
             if not ClassicOpenCV:
                 puzzle = test_set.get_puzzle(i)
             else:
