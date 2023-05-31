@@ -57,7 +57,7 @@ Table 1. Baseline for comparison
 
 
 ## Methods and Results
-### Experiment 1
+### Experiment 1: Standalone Language Model
 To look at the components of the SM individually, we first tested the LM on the ground-truth attributes of RPM puzzles; shapes, colour, size and angle. This experiment is done to assess the capabilities of the Language Model to solve the RPM with perfect information. For the Language Model, we choose FlanT5, because it is the largest open-source model, does not require an API key, and is trained on chain-of-thought. This means that it can, according to [[4]](#flant5), reason about logical problems quite well. Several sizes of the FlanT5 model were used. 
 
 As shown in Table 2, the number of parameters in the LM is highly important in its understanding of logical problems, the XL model having nearly double the accuracy of the L model. We would have also liked to use the XXL version, although with its 11B parameters, it did not fit even on the LISA cluster. Additionally, we did not use the smaller FlanT5 models that are available, as the performance drop from XL to L suggests that using fewer parameters would not yield a desirable result.
@@ -75,7 +75,7 @@ The following prompr was used to solve the puzzles:
 
 In the {}, the attributes of the individual figures (shape, colour, angle, size) are explained.
 
-### Experiment 2 The Socratic Model
+### Experiment 2: The Socratic Model
 ![image](https://github.com/TAkkerboom/DL2_socratic_models_team_2/assets/131353365/25672fcd-722e-4566-aaec-df6f186b705b)<br> Figure 3. SM pipeline using CLiP and BLiP as VLMs.
 
 With the Socratic Model we tested 2 VLMs; CLIP and BLIP and a traditional Computer Visions algorithm from OpenCV. These methods are used to get the visual understanding of the image, which is passed to the LLM for solving the puzzle.
