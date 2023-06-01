@@ -162,6 +162,7 @@ Table 5. Results Summary:
 | FlanT5-XL      | 0.78  |
 | CLIP + FlanT5-XL | 0.183   |
 | BLIP + FlanT5-XL | 0.175   |
+| OpenCV + FlanT5-XL | 0.41 |
 | OpenFlamingo  |  0.11     |
 | **Baseline**              |
 | ResNET + DRT   |  0.58     |
